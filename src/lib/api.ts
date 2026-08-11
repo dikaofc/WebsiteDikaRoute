@@ -63,8 +63,16 @@ const CF_CHALLENGE_MSG =
   "Terkena proteksi Cloudflare (Bot Fight Mode) di domain — nonaktifkan Bot Fight Mode atau tambahkan WAF rule khusus /api/* di dashboard Cloudflare.";
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  // JANGAN kirim Content-Type pada GET — header itu non-standar untuk GET
+  // dan bisa memicu deteksi bot Cloudflare. Content-Type hanya dipakai saat
+  // ada body (POST/PUT).
+  const hasBody = Boolean(init?.body);
   const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Accept: "application/json",
+      ...(hasBody ? { "Content-Type": "application/json" } : {}),
+      ...init?.headers,
+    },
     ...init,
   });
 
