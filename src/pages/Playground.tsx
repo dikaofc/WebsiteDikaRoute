@@ -146,7 +146,9 @@ export default function Playground() {
     api
       .playgroundStatus()
       .then((s) => setAvailability(s.available ? "ok" : "unavailable"))
-      .catch(() => setAvailability("ok"));
+      // Fail-safe: kalau API error (mis. fungsi serverless down), jangan
+      // tampilkan playground sebagai aktif — lebih aman tampil "unavailable".
+      .catch(() => setAvailability("unavailable"));
   }, []);
 
   const retryStatus = () => {
@@ -154,7 +156,9 @@ export default function Playground() {
     api
       .playgroundStatus()
       .then((s) => setAvailability(s.available ? "ok" : "unavailable"))
-      .catch(() => setAvailability("ok"));
+      // Fail-safe: kalau API error (mis. fungsi serverless down), jangan
+      // tampilkan playground sebagai aktif — lebih aman tampil "unavailable".
+      .catch(() => setAvailability("unavailable"));
   };
 
   const reset = () => {
