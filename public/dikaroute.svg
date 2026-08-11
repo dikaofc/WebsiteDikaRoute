@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <!-- CSS Styles & Animations -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&amp;display=swap');
+
+      .bg-base { fill: #0f172a; }
+
+      /* Fluid Animations */
+      .blob1 { animation: move1 10s infinite alternate ease-in-out; }
+      .blob2 { animation: move2 12s infinite alternate ease-in-out; }
+      .blob3 { animation: move3 15s infinite alternate ease-in-out; }
+
+      @keyframes move1 {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(50px, 50px) scale(1.1); }
+      }
+      @keyframes move2 {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(-60px, 20px) scale(0.9); }
+      }
+      @keyframes move3 {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(30px, -50px) scale(1.2); }
+      }
+
+      .glass-card {
+        fill: rgba(255, 255, 255, 0.05);
+        stroke: rgba(255, 255, 255, 0.2);
+        stroke-width: 1.5;
+        backdrop-filter: blur(10px); /* Fallback for CSS support */
+      }
+
+      .text-title {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 48px;
+        fill: #ffffff;
+        letter-spacing: -1px;
+      }
+
+      .text-sub {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-weight: 300;
+        font-size: 16px;
+        fill: rgba(255, 255, 255, 0.7);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .icon-glow {
+        filter: drop-shadow(0px 0px 15px rgba(56, 189, 248, 0.5));
+      }
+    </style>
+
+    <!-- Gradients for Fluid Blobs -->
+    <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+
+    <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+
+    <linearGradient id="grad-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f472b6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+
+    <!-- Glass Border Gradient (Shine effect) -->
+    <linearGradient id="glass-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.6)" />
+      <stop offset="20%" stop-color="rgba(255,255,255,0.1)" />
+      <stop offset="80%" stop-color="rgba(255,255,255,0.0)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0.3)" />
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="blur-heavy" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="60" />
+    </filter>
+
+    <filter id="glass-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <!-- This simulates backdrop-filter: blur inside SVG -->
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.2 0" />
+    </filter>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="20" stdDeviation="25" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Clip Path for the Card -->
+    <clipPath id="card-clip">
+      <rect x="200" y="150" width="400" height="300" rx="40" />
+    </clipPath>
+  </defs>
+
+  <!-- 1. Background Base -->
+  <rect class="bg-base" width="100%" height="100%" />
+
+  <!-- 2. Fluid Background Elements (The "Mesh") -->
+  <g filter="url(#blur-heavy)">
+    <circle class="blob1" cx="250" cy="200" r="180" fill="url(#grad-purple)" opacity="0.6" />
+    <circle class="blob2" cx="600" cy="400" r="200" fill="url(#grad-cyan)" opacity="0.5" />
+    <circle class="blob3" cx="450" cy="150" r="150" fill="url(#grad-pink)" opacity="0.4" />
+  </g>
+
+  <!-- 3. Glass Card Construction -->
+  <g filter="url(#shadow)">
+    <!-- A. The Blurred Background (Simulating Backdrop Filter) -->
+    <!-- We duplicate the background, clip it to the card shape, and blur it -->
+    <g clip-path="url(#card-clip)">
+      <rect x="200" y="150" width="400" height="300" fill="#0f172a" />
+      <g filter="url(#glass-blur)">
+        <circle class="blob1" cx="250" cy="200" r="180" fill="url(#grad-purple)" opacity="0.8" />
+        <circle class="blob2" cx="600" cy="400" r="200" fill="url(#grad-cyan)" opacity="0.7" />
+        <circle class="blob3" cx="450" cy="150" r="150" fill="url(#grad-pink)" opacity="0.6" />
+      </g>
+      <!-- Tint overlay -->
+      <rect x="200" y="150" width="400" height="300" fill="rgba(255, 255, 255, 0.05)" />
+    </g>
+
+    <!-- B. The Glass Surface & Border -->
+    <rect class="glass-card" x="200" y="150" width="400" height="300" rx="40" />
+    <!-- Inner Shine Border -->
+    <rect x="200" y="150" width="400" height="300" rx="40" fill="none" stroke="url(#glass-shine)" stroke-width="2" />
+  </g>
+
+  <!-- 4. Content (DikaRoute Branding) -->
+  <g transform="translate(400, 300)">
+
+    <!-- Icon: Abstract Route/Location -->
+    <g class="icon-glow" transform="translate(0, -60)">
+      <!-- Outer Ring -->
+      <circle cx="0" cy="0" r="30" fill="none" stroke="url(#grad-cyan)" stroke-width="3" stroke-dasharray="10 5" opacity="0.8"/>
+      <!-- Inner Pin/Route Shape -->
+      <path d="M0,-15 C-8,-15 -15,-8 -15,0 C-15,10 0,25 0,25 C0,25 15,10 15,0 C15,-8 8,-15 0,-15 Z" fill="#ffffff" />
+      <circle cx="0" cy="-2" r="5" fill="#0f172a" />
+    </g>
+
+    <!-- Typography -->
+    <text class="text-title" x="0" y="20" text-anchor="middle">DikaRoute</text>
+
+    <text class="text-sub" x="0" y="50" text-anchor="middle">Smart Navigation</text>
+
+    <!-- Decorative Line -->
+    <rect x="-20" y="70" width="40" height="3" rx="1.5" fill="url(#grad-cyan)" opacity="0.8" />
+  </g>
+
+</svg>

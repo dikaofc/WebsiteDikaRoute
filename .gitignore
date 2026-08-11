@@ -1,0 +1,9 @@
+node_modules
+dist
+server/data/contact.json
+server/data/newsletter.json
+server/data/donations.json
+server/data/payments.json
+.env
+.DS_Store
+*.log

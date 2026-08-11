@@ -1,0 +1,8 @@
+{
+  "active": true,
+  "title": "DikaRoute siap digunakan!",
+  "message": "Satu endpoint OpenAI-compatible untuk 290+ penyedia AI — lengkap dengan auto-fallback, kompresi konteks, monitoring, dan keamanan terintegrasi. Tambahkan provider di Dashboard → Providers untuk memulai.",
+  "link": "https://github.com/dikaofc/DikaRoute/releases",
+  "linkLabel": "Lihat Rilis",
+  "icon": "campaign"
+}
