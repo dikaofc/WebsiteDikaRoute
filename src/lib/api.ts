@@ -57,6 +57,11 @@ export interface IssuesResponse {
   issues: Issue[];
 }
 
+const CF_CHALLENGE_RE =
+  /cf-mitigated|challenge-platform|cf-chl-|Just a moment|Checking your browser|turnstile/i;
+const CF_CHALLENGE_MSG =
+  "Terkena proteksi Cloudflare (Bot Fight Mode) di domain — nonaktifkan Bot Fight Mode atau tambahkan WAF rule khusus /api/* di dashboard Cloudflare.";
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
@@ -74,19 +79,20 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   };
 
   if (!res.ok) {
+    if (CF_CHALLENGE_RE.test(text)) throw new Error(CF_CHALLENGE_MSG);
     const body = parseJson();
     const err = body.ok ? (body.data as { error?: string } | null)?.error : undefined;
     throw new Error(err || `Request gagal (${res.status})`);
   }
 
   // PENTING (akar masalah halaman blank): bila server membalas 2xx tapi body
-  // BUKAN JSON — mis. index.html SPA fallback yang keliru disajikan untuk
-  // /api/* oleh platform hosting — kita LEMPAR error tegas, bukan diam-diam
-  // mengembalikan objek kosong. Objek kosong membuat pemanggil membaca
-  // properti undefined (mis. res.issues) → crash render → seluruh halaman
-  // jadi putih/blank.
+  // BUKAN JSON — mis. halaman challenge Cloudflare atau index.html SPA fallback
+  // yang keliru disajikan untuk /api/* — kita LEMPAR error tegas, bukan
+  // diam-diam mengembalikan objek kosong. Objek kosong membuat pemanggil
+  // membaca properti undefined (mis. res.issues) → crash render → blank.
   const body = parseJson();
   if (!body.ok) {
+    if (CF_CHALLENGE_RE.test(text)) throw new Error(CF_CHALLENGE_MSG);
     throw new Error("Respons server tidak valid — muat ulang halaman.");
   }
   return body.data as T;
