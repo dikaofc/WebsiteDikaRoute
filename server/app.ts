@@ -2,9 +2,9 @@ import express from "express";
 import path from "node:path";
 import fs from "node:fs";
 import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
-import { isMailConfigured, sendMail, welcomeEmailHtml, releaseEmailHtml } from "./mailer.ts";
-import { loadEnv } from "./env.ts";
-import { createPaymentQrSafe, paidStatusSafe, saweriaConfig } from "./saweria.ts";
+import { isMailConfigured, sendMail, welcomeEmailHtml, releaseEmailHtml } from "./mailer.js";
+import { loadEnv } from "./env.js";
+import { createPaymentQrSafe, paidStatusSafe, saweriaConfig } from "./saweria.js";
 import QRCode from "qrcode";
 
 // Load .env dari root (idempoten; di Vercel env disuntik lebih dulu dan

@@ -7,7 +7,7 @@
  * Path asli (/api/health, /api/donation/pay, …) dipertahankan oleh rewrite,
  * jadi semua route Express cocok apa adanya.
  */
-import { app } from "../server/app.ts";
+import { app } from "../server/app.js";
 
 export const config = {
   maxDuration: 30,

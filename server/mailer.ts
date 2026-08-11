@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { loadEnv } from "./env.ts";
+import { loadEnv } from "./env.js";
 
 // WAJIB load env dulu sebelum membaca MAIL_USER/MAIL_PASS — karena modul ini
 // dieksekusi sebelum body server/index.ts berjalan (urutan import ESM).
