@@ -5,12 +5,9 @@ import {
   Rocket,
   Server,
   CheckCircle2,
-  AlertCircle,
   QrCode,
   ExternalLink,
-  Sparkles,
   HandCoins,
-  Pencil,
   ScanLine,
   ArrowLeft,
   BadgeCheck,
@@ -18,83 +15,20 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, btnClass } from "../lib/ui";
-import { api } from "../lib/api";
 import { useLang } from "../i18n";
-
-const AMOUNTS = [10000, 25000, 50000, 100000, 250000];
-
-const fmt = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
-
-function AmountSelector({
-  amount,
-  custom,
-  onChange,
-  customLabel,
-  customPh,
-}: {
-  amount: number | null;
-  custom: string;
-  onChange: (amount: number | null, custom: string) => void;
-  customLabel: string;
-  customPh: string;
-}) {
-  return (
-    <div>
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-        {AMOUNTS.map((a) => (
-          <button
-            key={a}
-            onClick={() => onChange(a, "")}
-            className={clsx(
-              "rounded-xl border px-3 py-3 text-sm font-semibold transition-all duration-200",
-              amount === a
-                ? "glass-2 border-pink-400/60 text-white"
-                : "glass-3 text-slate-300 hover:border-white/25"
-            )}
-          >
-            {fmt(a)}
-          </button>
-        ))}
-        <button
-          onClick={() => onChange(null, custom)}
-          className={clsx(
-            "rounded-xl border px-3 py-3 text-sm font-semibold transition-all duration-200",
-            amount === null && custom
-              ? "glass-2 border-pink-400/60 text-white"
-              : "glass-3 text-slate-300 hover:border-white/25"
-          )}
-        >
-          <Pencil size={14} /> {customLabel}
-        </button>
-      </div>
-      {amount === null && (
-        <input
-          value={custom}
-          onChange={(e) => onChange(null, e.target.value.replace(/\D/g, ""))}
-          placeholder={customPh}
-          inputMode="numeric"
-          className="mt-3 h-11 w-full rounded-xl px-3.5 text-sm text-white placeholder:text-slate-600 outline-none"
-        />
-      )}
-    </div>
-  );
-}
 
 type Phase = "form" | "qr" | "done";
 
 function StaticQrPanel({
-  amount,
   onPaid,
   onEdit,
   d,
 }: {
-  amount: number;
   onPaid: () => void;
   onEdit: () => void;
   d: {
     qrTitle: string;
     qrDesc: string;
-    total: string;
     owner: string;
     step1: string;
     step2: string;
@@ -134,15 +68,6 @@ function StaticQrPanel({
           <BadgeCheck size={12} className="text-pink-400" /> {d.owner}
         </p>
 
-        {amount > 0 && (
-          <div className="mx-auto mt-5 max-w-sm">
-            <div className="glass-3 flex items-center justify-between rounded-xl px-4 py-2.5 text-sm">
-              <span className="text-xs text-slate-500">{d.total}</span>
-              <span className="font-bold text-white">{fmt(amount)}</span>
-            </div>
-          </div>
-        )}
-
         <div className="mx-auto mt-5 max-w-sm space-y-2 text-left">
           {[d.step1, d.step2, d.step3].map((s, i) => (
             <div key={i} className="glass-3 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[13px] text-slate-300">
@@ -174,47 +99,17 @@ export default function Donate() {
   const p = dict.donate;
   const payTxt = p.payment;
 
-  const [amount, setAmount] = useState<number | null>(50000);
-  const [custom, setCustom] = useState("");
+  // QRIS statis → nominal bebas (tanpa min/maks), diisi donatur di aplikasinya.
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [phase, setPhase] = useState<Phase>("form");
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
-  const [msg, setMsg] = useState("");
-
-  const finalAmount = amount ?? (custom ? Number(custom) : 0);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (finalAmount <= 0) {
-      setStatus("error");
-      setMsg("Silakan pilih atau isi nominal donasi terlebih dahulu");
-      return;
-    }
-    setStatus("loading");
-    // Catat intent donasi bila nama + email valid (opsional, fire-and-forget).
-    // QRIS statis tidak bisa diverifikasi otomatis — ini hanya catatan niat.
-    if (form.name.trim() && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) {
-      api
-        .donation({
-          name: form.name,
-          email: form.email,
-          amount: finalAmount,
-          frequency: "sekali",
-          method: "qris",
-          message: form.message,
-        })
-        .catch(() => {});
-    }
-    setStatus("idle");
     setPhase("qr");
   };
 
   const resetForm = () => {
-    setAmount(50000);
-    setCustom("");
     setForm({ name: "", email: "", message: "" });
-    setStatus("idle");
-    setMsg("");
     setPhase("form");
   };
 
@@ -243,7 +138,6 @@ export default function Donate() {
             {phase === "qr" && (
               <div className="mt-6">
                 <StaticQrPanel
-                  amount={finalAmount}
                   onPaid={() => setPhase("done")}
                   onEdit={() => setPhase("form")}
                   d={payTxt}
@@ -264,12 +158,10 @@ export default function Donate() {
                     <PartyPopper size={28} />
                   </div>
                   <h3 className="mt-5 font-display text-xl font-bold text-white">{payTxt.doneTitle}</h3>
-                  <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-slate-400">{payTxt.doneDesc}</p>
-                  {finalAmount > 0 && (
-                    <p className="mt-4 inline-flex items-center gap-2 rounded-xl border border-pink-400/25 bg-pink-500/10 px-4 py-2.5 text-sm text-pink-200">
-                      <Sparkles size={15} /> {p.youDonate} <b className="text-white">{fmt(finalAmount)}</b>
-                    </p>
+                  {form.name.trim() && (
+                    <p className="mt-1 font-display text-sm font-semibold text-pink-300">{form.name.trim()}</p>
                   )}
+                  <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-slate-400">{payTxt.doneDesc}</p>
                   <button
                     onClick={resetForm}
                     className={btnClass("primary", undefined, "mx-auto mt-7 text-sm text-white")}
@@ -282,25 +174,6 @@ export default function Donate() {
 
             {phase === "form" && (
               <>
-                <div className="mt-5">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-slate-500">{p.amount}</label>
-                  <div className="mt-2.5">
-                    <AmountSelector
-                      amount={amount}
-                      custom={custom}
-                      onChange={(a, c) => { setAmount(a); setCustom(c); }}
-                      customLabel={p.custom}
-                      customPh={p.customPh}
-                    />
-                  </div>
-                  {finalAmount > 0 && (
-                    <div className="mt-4 flex items-center gap-2 rounded-xl border border-pink-400/25 bg-pink-500/10 px-4 py-3 text-sm text-pink-200">
-                      <Sparkles size={15} />
-                      {p.youDonate} <b className="text-white">{fmt(finalAmount)}</b>
-                    </div>
-                  )}
-                </div>
-
                 <form onSubmit={submit} className="mt-5 space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <input
@@ -326,26 +199,11 @@ export default function Donate() {
                   />
                   <button
                     type="submit"
-                    disabled={status === "loading"}
                     className={btnClass("primary", "lg", "w-full text-sm text-white")}
                   >
-                    {status === "loading" ? (
-                      <>
-                        <span className="spinner-white h-4 w-4 animate-spin rounded-full" />
-                        {p.saving}
-                      </>
-                    ) : (
-                      <>
-                        <QrCode size={15} />
-                        {p.seeQr}
-                      </>
-                    )}
+                    <QrCode size={15} />
+                    {p.seeQr}
                   </button>
-                  {status === "error" && (
-                    <p className="flex items-center gap-2 rounded-xl border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
-                      <AlertCircle size={16} /> {msg}
-                    </p>
-                  )}
                   <p className="flex items-start gap-2 text-center text-[11px] leading-relaxed text-slate-500">
                     <span className="mt-0.5">
                       <QrCode size={11} className="text-pink-400" />
