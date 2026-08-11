@@ -9,6 +9,19 @@
     "email": "",
     "status": "open",
     "votes": 1,
+    "id": "88fcd857-6b8b-485e-a804-24d2cd90c3aa",
+    "createdAt": "2026-08-10T13:14:01.640Z"
+  },
+  {
+    "title": "Bug E2E",
+    "type": "bug",
+    "severity": "high",
+    "description": "Deskripsi tes",
+    "steps": "",
+    "environment": "npm",
+    "email": "",
+    "status": "open",
+    "votes": 1,
     "id": "9280b311-432d-454b-936d-849912f34e05",
     "createdAt": "2026-08-10T13:13:20.300Z"
   },
@@ -178,7 +191,7 @@
     "email": "",
     "status": "open",
     "votes": 1,
-    "id": "88fcd857-6b8b-485e-a804-24d2cd90c3aa",
-    "createdAt": "2026-08-10T13:14:01.640Z"
+    "id": "e75f19a9-6f1e-4d3f-afbd-0279a3403c56",
+    "createdAt": "2026-08-11T01:57:50.545Z"
   }
 ]
