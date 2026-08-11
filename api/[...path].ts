@@ -6,7 +6,7 @@
  * tidak menimpa env Vercel). Path asli (/api/health, /api/donation/pay, …)
  * dipertahankan oleh Vercel, jadi semua route Express cocok apa adanya.
  */
-import { app } from "../server/app";
+import { app } from "../server/app.ts";
 
 export const config = {
   maxDuration: 30,
