@@ -45,7 +45,7 @@ export async function sendMail(opts: { to: string; subject: string; html: string
   });
 }
 
-const emailShell = (body: string) => `
+const emailShell = (body: string, footer?: string) => `
 <div style="background:#070812;padding:28px 16px;font-family:Arial,Helvetica,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#0d1022;border:1px solid #232745;border-radius:16px;overflow:hidden">
     <div style="padding:22px 28px;border-bottom:1px solid #232745">
@@ -53,8 +53,8 @@ const emailShell = (body: string) => `
     </div>
     <div style="padding:28px">${body}</div>
     <div style="padding:18px 28px;border-top:1px solid #232745;font-size:12px;color:#7b82a0;line-height:1.7">
-      Unified AI Gateway &amp; Intelligent Model Router · MIT License<br/>
-      <a href="${baseUrl()}/unsubscribe" style="color:#818cf8">Berhenti berlangganan</a>
+      ${footer ?? `Unified AI Gateway &amp; Intelligent Model Router · MIT License<br/>
+      <a href="${baseUrl()}/unsubscribe" style="color:#818cf8">Berhenti berlangganan</a>`}
     </div>
   </div>
 </div>`;
@@ -81,6 +81,36 @@ export function welcomeEmailHtml(): string {
       Satu endpoint. 290+ provider AI. Auto-fallback bawaan.
     </p>
   `);
+}
+
+/** Email terima kasih donasi (QRIS statis — tombol "Saya Sudah Membayar"). */
+export function donationThankYouEmailHtml(opts: { name?: string; message?: string }): string {
+  const name = stripCrlf(opts.name || "Donatur");
+  const msg = stripCrlf(opts.message || "");
+  return emailShell(
+    `
+    <h1 style="margin:0 0 12px;font-size:22px;color:#fff">Terima kasih, ${name}! 💛</h1>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.7;color:#b7bdd8">
+      Donasi kamu sangat berarti untuk pengembangan <b style="color:#fff">DikaRoute</b> —
+      Unified AI Gateway yang gratis dan open source.
+    </p>
+    ${
+      msg
+        ? `<blockquote style="margin:0 0 14px;padding:12px 16px;border-left:3px solid #818cf8;background:#0b0d1c;border-radius:8px;font-size:13px;color:#b7bdd8">“${msg}”</blockquote>`
+        : ""
+    }
+    <p style="margin:0 0 18px;font-size:14px;line-height:1.7;color:#b7bdd8">
+      Setiap rupiah membantu menutup biaya server &amp; pengembangan fitur baru.
+    </p>
+    <div style="background:#0b0d1c;border:1px solid #232745;border-radius:10px;padding:14px 16px;font-family:monospace;font-size:13px;color:#a5b4fc">
+      npm install -g dikaroute && dikaroute
+    </div>
+    <p style="margin:20px 0 0;font-size:13px;color:#7b82a0">
+      Satu endpoint. 290+ provider AI. Auto-fallback bawaan.
+    </p>`,
+    // footer tanpa link unsubscribe — donatur tidak berlangganan newsletter
+    `Unified AI Gateway &amp; Intelligent Model Router · MIT License`
+  );
 }
 
 export function releaseEmailHtml(opts: {

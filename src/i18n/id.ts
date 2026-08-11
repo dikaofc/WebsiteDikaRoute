@@ -353,6 +353,7 @@ export const id = {
       editBtn: "Ubah Data",
       doneTitle: "Terima kasih!",
       doneDesc: "Donasi kamu sangat berarti untuk pengembangan DikaRoute ke depannya. 🙏",
+      emailSent: "Email konfirmasi terima kasih terkirim ke",
       againBtn: "Donasi Lagi",
     },
   },

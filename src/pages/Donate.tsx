@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, btnClass } from "../lib/ui";
+import { api } from "../lib/api";
 import { useLang } from "../i18n";
 
 type Phase = "form" | "qr" | "done";
@@ -102,14 +103,27 @@ export default function Donate() {
   // QRIS statis → nominal bebas (tanpa min/maks), diisi donatur di aplikasinya.
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [phase, setPhase] = useState<Phase>("form");
+  const [emailSent, setEmailSent] = useState<boolean | null>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setPhase("qr");
   };
 
+  // Donatur klik "Saya Sudah Membayar" → catat donasi + kirim email
+  // terima kasih via Gmail SMTP (async; tidak menghalangi tampilan done).
+  const handlePaid = () => {
+    setEmailSent(null);
+    api
+      .donationConfirm({ name: form.name, email: form.email, message: form.message })
+      .then((r) => setEmailSent(r.emailSent))
+      .catch(() => setEmailSent(false));
+    setPhase("done");
+  };
+
   const resetForm = () => {
     setForm({ name: "", email: "", message: "" });
+    setEmailSent(null);
     setPhase("form");
   };
 
@@ -138,7 +152,7 @@ export default function Donate() {
             {phase === "qr" && (
               <div className="mt-6">
                 <StaticQrPanel
-                  onPaid={() => setPhase("done")}
+                  onPaid={handlePaid}
                   onEdit={() => setPhase("form")}
                   d={payTxt}
                 />
@@ -162,6 +176,11 @@ export default function Donate() {
                     <p className="mt-1 font-display text-sm font-semibold text-pink-300">{form.name.trim()}</p>
                   )}
                   <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-slate-400">{payTxt.doneDesc}</p>
+                  {emailSent && (
+                    <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-emerald-300">
+                      <CheckCircle2 size={12} /> {payTxt.emailSent} <b>{form.email}</b>
+                    </p>
+                  )}
                   <button
                     onClick={resetForm}
                     className={btnClass("primary", undefined, "mx-auto mt-7 text-sm text-white")}

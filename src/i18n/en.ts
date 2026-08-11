@@ -353,6 +353,7 @@ export const en = {
       editBtn: "Edit Details",
       doneTitle: "Thank you!",
       doneDesc: "Your donation means a lot for DikaRoute's future development. 🙏",
+      emailSent: "Confirmation email sent to",
       againBtn: "Donate Again",
     },
   },

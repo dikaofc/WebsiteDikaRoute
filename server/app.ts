@@ -2,7 +2,13 @@ import express from "express";
 import path from "node:path";
 import fs from "node:fs";
 import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
-import { isMailConfigured, sendMail, welcomeEmailHtml, releaseEmailHtml } from "./mailer.js";
+import {
+  isMailConfigured,
+  sendMail,
+  welcomeEmailHtml,
+  releaseEmailHtml,
+  donationThankYouEmailHtml,
+} from "./mailer.js";
 import { loadEnv } from "./env.js";
 import { createPaymentQrSafe, paidStatusSafe, saweriaConfig } from "./saweria.js";
 import QRCode from "qrcode";
@@ -443,6 +449,50 @@ app.post("/api/donation", (req, res) => {
     ok: true,
     message: `Terima kasih! Donasi intent Rp${nominal.toLocaleString("id-ID")} tercatat.`,
   });
+});
+
+/**
+ * Konfirmasi donasi QRIS STATIS (tombol "Saya Sudah Membayar").
+ * Mencatat donatur di donations.json + mengirim email terima kasih via
+ * Gmail SMTP bila MAIL_USER/MAIL_PASS dikonfigurasi dan email valid.
+ * QRIS statis tidak diverifikasi otomatis — konfirmasi ini manual.
+ */
+app.post("/api/donation/confirm", async (req, res) => {
+  const { name = "", email = "", message = "" } = req.body ?? {};
+  const cleanName = String(name).trim().slice(0, 60);
+  const cleanEmail = String(email).trim().slice(0, 120);
+  const cleanMessage = String(message).trim().slice(0, 200);
+
+  // Catat donatur (tanpa nominal — QRIS statis nominal bebas).
+  appendToJson(path.join(DATA_DIR, "donations.json"), {
+    name: cleanName,
+    email: cleanEmail,
+    message: cleanMessage,
+    method: "qris-static",
+    status: "confirmed-manual",
+  });
+
+  const validEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail);
+  if (!validEmail) {
+    return res.json({ ok: true, emailSent: false, message: "Konfirmasi donasi tercatat." });
+  }
+  if (!isMailConfigured()) {
+    console.warn("[mail] MAIL_USER/MAIL_PASS belum diatur — email terima kasih tidak dikirim.");
+    return res.json({ ok: true, emailSent: false, message: "Konfirmasi donasi tercatat." });
+  }
+
+  try {
+    await sendMail({
+      to: cleanEmail,
+      subject: "Terima kasih atas donasi kamu! 💛",
+      html: donationThankYouEmailHtml({ name: cleanName, message: cleanMessage }),
+    });
+    console.log(`[mail] terima kasih donasi terkirim ke ${cleanEmail}`);
+    res.json({ ok: true, emailSent: true, message: "Email terima kasih terkirim." });
+  } catch (e) {
+    console.error(`[mail] email terima kasih gagal (${cleanEmail}):`, (e as Error).message);
+    res.json({ ok: true, emailSent: false, message: "Donasi tercatat, tapi email gagal terkirim." });
+  }
 });
 
 /* ------------------------------------------------------------------ */

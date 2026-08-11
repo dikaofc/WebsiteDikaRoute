@@ -103,6 +103,11 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  donationConfirm: (payload: { name?: string; email?: string; message?: string }) =>
+    request<{ ok: boolean; emailSent: boolean; message: string }>("/api/donation/confirm", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   donationPay: (payload: {
     name: string;
     email: string;
