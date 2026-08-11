@@ -11,6 +11,9 @@ import { app } from "../server/app.ts";
 export const config = {
   maxDuration: 30,
   supportsResponseStreaming: true,
+  // Pastikan file data (news.json, issues.json, CHANGELOG.md) ikut ter-bundle
+  // — tracer Vercel tidak bisa mendeteksi path dinamis (path.join runtime).
+  files: ["server/data"],
 };
 
 export default app;

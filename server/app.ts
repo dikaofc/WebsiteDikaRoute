@@ -13,9 +13,27 @@ import QRCode from "qrcode";
 // seperti BROADCAST_TOKEN dievaluasi.
 loadEnv();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
-const DATA_DIR = path.join(__dirname, "data");
+// CJS-safe path resolution: Vercel me-bundle fungsi sebagai CJS, di mana
+// import.meta.url = undefined (esbuild) → fallback ke process.cwd().
+// Native ESM (tsx / npm start) memakai import.meta.url seperti biasa.
+const srcDir =
+  typeof import.meta.url === "string"
+    ? path.dirname(fileURLToPath(import.meta.url))
+    : process.cwd();
+const root = path.resolve(srcDir, "..");
+const DATA_DIR = (() => {
+  const candidates = [
+    path.join(srcDir, "data"),                  // lokal: <root>/server/data
+    path.join(process.cwd(), "server", "data"), // Vercel: server/data ikut bundle
+    path.join(process.cwd(), "data"),
+  ];
+  for (const c of candidates) {
+    try {
+      if (fs.existsSync(c)) return c;
+    } catch {}
+  }
+  return candidates[0];
+})();
 const isProd = process.env.NODE_ENV === "production";
 const isVercel = process.env.VERCEL === "1";
 
@@ -142,7 +160,11 @@ async function fetchGithubText(url: string): Promise<string> {
 }
 
 function localChangelogMd() {
-  return fs.readFileSync(path.join(DATA_DIR, "CHANGELOG.md"), "utf-8");
+  try {
+    return fs.readFileSync(path.join(DATA_DIR, "CHANGELOG.md"), "utf-8");
+  } catch {
+    return "# Changelog\n\n## [0.0.0] - 1970-01-01\n- (offline — file tidak tersedia)";
+  }
 }
 
 /* ------------------------------------------------------------------ */
