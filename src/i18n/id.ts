@@ -244,6 +244,7 @@ export const id = {
     loading: "Memuat changelog dari API…",
     empty: "Tidak ada rilis yang cocok dengan pencarian",
     view: "Lihat di GitHub",
+    retry: "Coba lagi",
   },
   playground: {
     eyebrow: "Interactive Demo",
@@ -333,6 +334,7 @@ export const id = {
       { title: "Bayar & konfirmasi", desc: "Selesaikan pembayaran di aplikasi, lalu klik 'Saya Sudah Membayar'." },
     ],
     methodsTitle: "Metode Pembayaran",
+    aktif: "aktif",
     saweria: "saweria.co/dikatech · alternatif eksternal",
     qris: "QRIS statis Dika Code · scan & bayar langsung",
     usageTitle: "Donasi Anda dipakai untuk",

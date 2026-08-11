@@ -195,45 +195,59 @@ app.get("/api/news", (_req, res) => {
  * 10 menit. Jika GitHub tidak terjangkau, fallback ke salinan lokal.
  */
 app.get("/api/changelog", async (_req, res) => {
+  // Selalu balas JSON — jangan pernah biarkan exception menjadi halaman
+  // error HTML (ini membuat klien mengira "respons tidak valid").
   const respond = (md: string, source: "github" | "local", fetchedAt: string | null) => {
-    const releases = parseChangelog(md);
-    res.json({
-      total: releases.length,
-      releases,
-      source,
-      fetchedAt,
-      nextRefreshInMs: CHANGELOG_CACHE_TTL_MS,
-    });
+    try {
+      const releases = parseChangelog(md);
+      res.json({
+        total: releases.length,
+        releases,
+        source,
+        fetchedAt,
+        nextRefreshInMs: CHANGELOG_CACHE_TTL_MS,
+      });
+    } catch (e) {
+      console.error("[api] changelog respond gagal:", e);
+      res.status(500).json({ ok: false, error: "Gagal memproses changelog." });
+    }
   };
 
-  // pakai cache bila masih segar
-  if (changelogCache && Date.now() - changelogCache.cachedAt < CHANGELOG_CACHE_TTL_MS) {
-    return respond(changelogCache.md, changelogCache.source, changelogCache.fetchedAt);
-  }
+  try {
+    // pakai cache bila masih segar
+    if (changelogCache && Date.now() - changelogCache.cachedAt < CHANGELOG_CACHE_TTL_MS) {
+      return respond(changelogCache.md, changelogCache.source, changelogCache.fetchedAt);
+    }
 
-  // anti stampede: satu fetch untuk semua request yang bersamaan
-  if (!inflightChangelog) {
-    inflightChangelog = (async () => {
-      try {
-        const md = await fetchGithubText(GITHUB_RAW_CHANGELOG);
-        // Validasi: jangan simpan konten "github" yang ternyata bukan changelog
-        // (mis. halaman error/HTML) — lebih baik fallback daripada menampilkan sampah.
-        if (parseChangelog(md).length === 0) throw new Error("changelog tidak valid");
-        return { md, source: "github" as const, fetchedAt: new Date().toISOString() };
-      } catch {
-        // GitHub gagal → TETAP pakai cache GitHub terakhir bila ada; jangan racuni cache.
-        if (changelogCache) return changelogCache;
-        const md = localChangelogMd();
-        return { md, source: "local" as const, fetchedAt: null };
-      } finally {
-        inflightChangelog = null;
-      }
-    })();
-  }
+    // anti stampede: satu fetch untuk semua request yang bersamaan
+    if (!inflightChangelog) {
+      inflightChangelog = (async () => {
+        try {
+          const md = await fetchGithubText(GITHUB_RAW_CHANGELOG);
+          // Validasi: jangan simpan konten "github" yang ternyata bukan changelog
+          // (mis. halaman error/HTML) — lebih baik fallback daripada menampilkan sampah.
+          if (parseChangelog(md).length === 0) throw new Error("changelog tidak valid");
+          return { md, source: "github" as const, fetchedAt: new Date().toISOString() };
+        } catch {
+          // GitHub gagal → TETAP pakai cache GitHub terakhir bila ada; jangan racuni cache.
+          if (changelogCache) return changelogCache;
+          const md = localChangelogMd();
+          return { md, source: "local" as const, fetchedAt: null };
+        } finally {
+          inflightChangelog = null;
+        }
+      })();
+    }
 
-  const fresh = await inflightChangelog;
-  changelogCache = { ...fresh, cachedAt: Date.now() };
-  respond(fresh.md, fresh.source, fresh.fetchedAt);
+    const fresh = await inflightChangelog;
+    changelogCache = { ...fresh, cachedAt: Date.now() };
+    respond(fresh.md, fresh.source, fresh.fetchedAt);
+  } catch (e) {
+    console.error("[api] /api/changelog error:", e);
+    if (!res.headersSent) {
+      res.status(500).json({ ok: false, error: "Gagal memuat changelog." });
+    }
+  }
 });
 
 /**
@@ -245,34 +259,41 @@ app.get("/api/changelog", async (_req, res) => {
  * Fallback: REST releases/latest (parse JSON aman) → salinan lokal.
  */
 app.get("/api/version", async (_req, res) => {
-  if (versionCache && Date.now() - versionCache.cachedAt < VERSION_CACHE_TTL_MS) {
-    return res.json({ version: versionCache.version, source: "cache" });
-  }
+  try {
+    if (versionCache && Date.now() - versionCache.cachedAt < VERSION_CACHE_TTL_MS) {
+      return res.json({ version: versionCache.version, source: "cache" });
+    }
 
-  if (!inflightVersion) {
-    inflightVersion = (async () => {
-      // 1) CHANGELOG.md mentah — bebas rate-limit, selalu mutakhir
-      try {
-        const md = await fetchGithubText(GITHUB_RAW_CHANGELOG);
-        const first = parseChangelog(md)[0];
-        if (first?.version) return { version: first.version, source: "github" as const };
-      } catch {}
-      // 2) REST API releases/latest — parse aman (body bisa bukan JSON saat rate-limit)
-      try {
-        const body = await fetchGithubText(GITHUB_LATEST_RELEASE, "application/vnd.github+json");
-        const data = JSON.parse(body) as { tag_name?: string };
-        const version = String(data.tag_name ?? "").replace(/^v/, "");
-        if (version) return { version, source: "github" as const };
-      } catch {}
-      // 3) fallback salinan lokal
-      const first = parseChangelog(localChangelogMd())[0];
-      return { version: first?.version ?? "0.0.0", source: "local" as const };
-    })();
-  }
+    if (!inflightVersion) {
+      inflightVersion = (async () => {
+        // 1) CHANGELOG.md mentah — bebas rate-limit, selalu mutakhir
+        try {
+          const md = await fetchGithubText(GITHUB_RAW_CHANGELOG);
+          const first = parseChangelog(md)[0];
+          if (first?.version) return { version: first.version, source: "github" as const };
+        } catch {}
+        // 2) REST API releases/latest — parse aman (body bisa bukan JSON saat rate-limit)
+        try {
+          const body = await fetchGithubText(GITHUB_LATEST_RELEASE, "application/vnd.github+json");
+          const data = JSON.parse(body) as { tag_name?: string };
+          const version = String(data.tag_name ?? "").replace(/^v/, "");
+          if (version) return { version, source: "github" as const };
+        } catch {}
+        // 3) fallback salinan lokal
+        const first = parseChangelog(localChangelogMd())[0];
+        return { version: first?.version ?? "0.0.0", source: "local" as const };
+      })();
+    }
 
-  const fresh = await inflightVersion;
-  versionCache = { version: fresh.version, cachedAt: Date.now() };
-  res.json({ version: fresh.version, source: fresh.source });
+    const fresh = await inflightVersion;
+    versionCache = { version: fresh.version, cachedAt: Date.now() };
+    res.json({ version: fresh.version, source: fresh.source });
+  } catch (e) {
+    console.error("[api] /api/version error:", e);
+    if (!res.headersSent) {
+      res.status(500).json({ ok: false, error: "Gagal memuat versi." });
+    }
+  }
 });
 
 app.get("/api/stats", (_req, res) => {
@@ -980,6 +1001,19 @@ app.post("/api/playground", (req, res) => {
 /*  Di Vercel, file statis disajikan oleh platform sendiri — fungsi   */
 /*  ini hanya melayani /api/* dan tidak perlu express.static.          */
 /* ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------ */
+/*  Error handler global — JANGAN pernah balas HTML untuk /api/*.      */
+/*  Semua error → JSON { error }, sehingga klien tidak pernah melihat   */
+/*  "Respons server tidak valid".                                      */
+/* ------------------------------------------------------------------ */
+app.use(
+  (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error("[api] unhandled error:", err);
+    if (res.headersSent) return;
+    res.status(500).json({ ok: false, error: "Terjadi kesalahan server. Coba lagi." });
+  }
+);
 
 if (isProd && !isVercel) {
   const dist = path.join(root, "dist");

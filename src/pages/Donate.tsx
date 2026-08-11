@@ -16,7 +16,6 @@ import {
   Download,
   X,
 } from "lucide-react";
-import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, btnClass } from "../lib/ui";
 import { api } from "../lib/api";
 import { useLang } from "../i18n";
@@ -68,13 +67,18 @@ function StaticQrPanel({
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="mx-auto max-w-lg"
     >
-      <div className="glass relative overflow-hidden rounded-3xl p-7 text-center sm:p-9">
+      <div className="glass relative overflow-hidden rounded-2xl p-7 text-center sm:p-9">
         <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rotate-12 bg-pink-500/10" />
 
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-pink-400/30 bg-pink-500/10 text-pink-300 glow-ring">
+        {/* stiker sudut ala Saweria */}
+        <span className="absolute -right-2.5 -top-2.5 rotate-6 rounded-lg border-2 border-[var(--bd)] bg-pink-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-black shadow-[3px_3px_0_0_var(--sh)]">
+          {d.qrTitle}
+        </span>
+
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[var(--bd)] bg-pink-400 text-black shadow-[3px_3px_0_0_var(--sh)]">
           <ScanLine size={26} />
         </div>
-        <h3 className="mt-5 font-display text-xl font-bold text-white">{d.qrTitle}</h3>
+        <h3 className="mt-5 font-display text-xl font-extrabold text-white">{d.qrTitle}</h3>
         <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-slate-400">{d.qrDesc}</p>
 
         {/* QRIS statis — foto kartu QRIS resmi (klik untuk perbesar/unduh) */}
@@ -82,7 +86,7 @@ function StaticQrPanel({
           type="button"
           onClick={() => setZoom(true)}
           aria-label={d.zoomHint}
-          className="group mx-auto mt-6 w-fit cursor-zoom-in rounded-2xl p-3 shadow-[0_10px_30px_-14px_rgba(15,23,42,0.35)] transition-transform duration-200 hover:scale-[1.03] active:scale-[0.99]"
+          className="group mx-auto mt-6 w-fit cursor-zoom-in rounded-xl border-2 border-[var(--bd)] p-2.5 shadow-[6px_6px_0_0_var(--sh)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_var(--sh)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[3px_3px_0_0_var(--sh)]"
           style={{ background: "#fff" }}
         >
           <img
@@ -90,10 +94,10 @@ function StaticQrPanel({
             alt="QRIS Dika Code"
             width={280}
             height={395}
-            className="h-auto w-[230px] rounded-xl sm:w-[280px]"
+            className="h-auto w-[230px] rounded-lg sm:w-[280px]"
           />
         </button>
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
           <BadgeCheck size={12} className="text-pink-400" /> {d.owner}
           <span className="mx-1 text-slate-700">·</span>
           <span className="inline-flex items-center gap-1 text-slate-400">
@@ -101,10 +105,12 @@ function StaticQrPanel({
           </span>
         </p>
 
-        <div className="mx-auto mt-5 max-w-sm space-y-2 text-left">
+        <div className="mx-auto mt-5 max-w-sm space-y-2.5 text-left">
           {[d.step1, d.step2, d.step3].map((s, i) => (
-            <div key={i} className="glass-3 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[13px] text-slate-300">
-              <span className="font-mono text-[11px] font-bold text-pink-400">{String(i + 1).padStart(2, "0")}</span>
+            <div key={i} className="glass-3 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[13px] text-slate-300 shadow-[2px_2px_0_0_var(--sh)]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center border-2 border-[var(--bd)] bg-pink-400 font-mono text-[11px] font-extrabold text-black">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               {s}
             </div>
           ))}
@@ -133,7 +139,7 @@ function StaticQrPanel({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setZoom(false)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0d0d12]/95 p-4"
             role="dialog"
             aria-modal="true"
             aria-label={d.zoomHint}
@@ -146,12 +152,14 @@ function StaticQrPanel({
               onClick={(e) => e.stopPropagation()}
               className="relative max-h-full"
             >
-              <img
-                src="/qris-static.jpg"
-                alt="QRIS Dika Code"
-                className="max-h-[76vh] w-auto rounded-2xl shadow-2xl ring-1 ring-white/15"
-              />
-              <div className="mt-5 flex items-center justify-center gap-3">
+              <div className="rounded-xl border-2 border-[var(--bd)] bg-white p-3 shadow-[8px_8px_0_0_var(--sh)]">
+                <img
+                  src="/qris-static.jpg"
+                  alt="QRIS Dika Code"
+                  className="max-h-[60vh] w-auto rounded-lg"
+                />
+              </div>
+              <div className="mt-6 flex items-center justify-center gap-3">
                 <a
                   href="/qris-static.jpg"
                   download="qris-dikacode.jpg"
@@ -219,13 +227,15 @@ export default function Donate() {
       <div className="grid gap-8 lg:grid-cols-2">
         {/* left: form / qr / done */}
         <Reveal>
-          <div className="glass rounded-3xl p-7">
-            <div className="flex items-center gap-2.5 border-b border-white/10 pb-4">
-              <Heart size={18} className="text-pink-400" />
-              <h3 className="font-display text-base font-bold text-white">{p.formTitle}</h3>
-              <span className="ml-auto rounded-full border border-pink-400/30 bg-pink-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-pink-300">
-                {p.customTab}
-              </span>
+          <div className="glass relative rounded-2xl p-7">
+            <span className="absolute -right-2.5 -top-2.5 -rotate-3 rounded-lg border-2 border-[var(--bd)] bg-amber-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-black shadow-[3px_3px_0_0_var(--sh)]">
+              {p.customTab}
+            </span>
+            <div className="flex items-center gap-2.5 border-b-2 border-[var(--bd)] pb-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-[var(--bd)] bg-pink-400 text-black shadow-[2px_2px_0_0_var(--sh)]">
+                <Heart size={17} />
+              </div>
+              <h3 className="font-display text-base font-extrabold text-white">{p.formTitle}</h3>
             </div>
 
             {phase === "qr" && (
@@ -245,12 +255,15 @@ export default function Donate() {
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="mx-auto max-w-lg"
               >
-                <div className="glass relative overflow-hidden rounded-3xl p-10 text-center sm:p-12">
+                <div className="glass relative overflow-hidden rounded-2xl p-10 text-center sm:p-12">
                   <div className="pointer-events-none absolute -left-10 -bottom-10 h-28 w-28 -rotate-12 bg-emerald-500/10" />
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/10 text-emerald-300 glow-ring">
+                  <span className="absolute -right-2.5 -top-2.5 rotate-6 rounded-lg border-2 border-[var(--bd)] bg-emerald-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-black shadow-[3px_3px_0_0_var(--sh)]">
+                    ✓ {payTxt.paidBtn}
+                  </span>
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl border-2 border-[var(--bd)] bg-emerald-400 text-black shadow-[4px_4px_0_0_var(--sh)]">
                     <PartyPopper size={28} />
                   </div>
-                  <h3 className="mt-5 font-display text-xl font-bold text-white">{payTxt.doneTitle}</h3>
+                  <h3 className="mt-5 font-display text-xl font-extrabold text-white">{payTxt.doneTitle}</h3>
                   {form.name.trim() && (
                     <p className="mt-1 font-display text-sm font-semibold text-pink-300">{form.name.trim()}</p>
                   )}
@@ -302,10 +315,8 @@ export default function Donate() {
                     <QrCode size={15} />
                     {p.seeQr}
                   </button>
-                  <p className="flex items-start gap-2 text-center text-[11px] leading-relaxed text-slate-500">
-                    <span className="mt-0.5">
-                      <QrCode size={11} className="text-pink-400" />
-                    </span>
+                  <p className="glass-3 flex items-start gap-2.5 rounded-xl border-2 px-4 py-3 text-left text-[11px] leading-relaxed text-slate-500 shadow-[2px_2px_0_0_var(--sh)]">
+                    <QrCode size={13} className="mt-0.5 shrink-0 text-pink-400" />
                     {p.note}
                   </p>
                 </form>
@@ -317,14 +328,16 @@ export default function Donate() {
         {/* right: steps & info */}
         <div className="space-y-5">
           <Reveal delay={0.05}>
-            <div className="glass rounded-3xl p-7">
-              <h3 className="font-display text-base font-bold text-white">{p.howTitle}</h3>
+            <div className="glass rounded-2xl p-7">
+              <h3 className="font-display text-base font-extrabold text-white">{p.howTitle}</h3>
               <div className="mt-5 space-y-4">
                 {p.steps.map((s, i) => (
                   <div key={s.title} className="flex gap-4">
-                    <span className="font-mono text-sm font-bold text-pink-400">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center border-2 border-[var(--bd)] bg-pink-400 font-mono text-xs font-extrabold text-black shadow-[2px_2px_0_0_var(--sh)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <div>
-                      <div className="text-sm font-semibold text-white">{s.title}</div>
+                      <div className="text-sm font-bold text-white">{s.title}</div>
                       <div className="mt-0.5 text-[13px] text-slate-400">{s.desc}</div>
                     </div>
                   </div>
@@ -334,30 +347,32 @@ export default function Donate() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <div className="glass rounded-3xl p-7">
-              <h3 className="font-display text-base font-bold text-white">{p.methodsTitle}</h3>
+            <div className="glass rounded-2xl p-7">
+              <h3 className="font-display text-base font-extrabold text-white">{p.methodsTitle}</h3>
               <div className="mt-4 space-y-3">
-                <div className="glass-3 flex items-center gap-4 rounded-2xl p-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-400/25 bg-cyan-500/10 text-cyan-300">
+                <div className="glass-3 flex items-center gap-4 rounded-xl p-4 shadow-[3px_3px_0_0_var(--sh)]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--bd)] bg-cyan-400 text-black shadow-[2px_2px_0_0_var(--sh)]">
                     <QrCode size={18} />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-white">{p.methods[1]}</div>
+                    <div className="text-sm font-bold text-white">{p.methods[1]}</div>
                     <div className="text-xs text-slate-500">{p.qris}</div>
                   </div>
-                  <CheckCircle2 size={15} className="ml-auto text-emerald-400" />
+                  <span className="ml-auto rounded-lg border-2 border-[var(--bd)] bg-emerald-400 px-2 py-0.5 text-[10px] font-extrabold uppercase text-black shadow-[2px_2px_0_0_var(--sh)]">
+                    ✓ {p.aktif}
+                  </span>
                 </div>
                 <a
                   href="https://saweria.co/dikatech"
                   target="_blank"
                   rel="noreferrer"
-                  className="glass-3 card-hover group flex items-center gap-4 rounded-2xl p-4"
+                  className="glass-3 card-hover group flex items-center gap-4 rounded-xl p-4 shadow-[3px_3px_0_0_var(--sh)]"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-pink-400/25 bg-pink-500/10 text-pink-300">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--bd)] bg-pink-400 text-black shadow-[2px_2px_0_0_var(--sh)]">
                     <HandCoins size={18} />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-white">{p.methods[0]}</div>
+                    <div className="text-sm font-bold text-white">{p.methods[0]}</div>
                     <div className="text-xs text-slate-500">{p.saweria}</div>
                   </div>
                   <ExternalLink size={15} className="text-slate-500 transition-colors group-hover:text-pink-300" />
@@ -367,19 +382,19 @@ export default function Donate() {
           </Reveal>
 
           <Reveal delay={0.15}>
-            <div className="glass rounded-3xl p-7">
-              <h3 className="font-display text-base font-bold text-white">{p.usageTitle}</h3>
+            <div className="glass rounded-2xl p-7">
+              <h3 className="font-display text-base font-extrabold text-white">{p.usageTitle}</h3>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 {p.usage.map((c, i) => (
-                  <div key={c.label} className="glass-3 rounded-xl p-4 text-center">
-                    <div className={clsx("mx-auto flex h-9 w-9 items-center justify-center rounded-lg border", c.tone)}>
+                  <div key={c.label} className="glass-3 rounded-lg p-4 text-center shadow-[2px_2px_0_0_var(--sh)]">
+                    <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-md border-2 border-[var(--bd)] bg-white text-black shadow-[2px_2px_0_0_var(--sh)]">
                       {i === 0 ? <Server size={17} /> : i === 1 ? <Rocket size={17} /> : <Heart size={17} />}
                     </div>
-                    <div className="mt-2 text-xs font-semibold text-slate-200">{c.label}</div>
+                    <div className="mt-2 text-xs font-bold text-slate-200">{c.label}</div>
                   </div>
                 ))}
               </div>
-              <p className="glass-3 mt-4 flex items-center gap-2 rounded-xl px-4 py-3 text-[13px] text-slate-400">
+              <p className="glass-3 mt-4 flex items-center gap-2 rounded-lg border-2 px-4 py-3 text-[13px] text-slate-400 shadow-[2px_2px_0_0_var(--sh)]">
                 <Heart size={13} className="text-pink-400" />
                 {p.thanks}
               </p>

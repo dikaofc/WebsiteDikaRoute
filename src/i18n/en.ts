@@ -244,6 +244,7 @@ export const en = {
     loading: "Loading changelog from the API…",
     empty: "No releases match the search",
     view: "View on GitHub",
+    retry: "Try again",
   },
   playground: {
     eyebrow: "Interactive Demo",
@@ -333,6 +334,7 @@ export const en = {
       { title: "Pay & confirm", desc: "Complete the payment in your app, then click 'I've Paid'." },
     ],
     methodsTitle: "Payment Methods",
+    aktif: "Active",
     saweria: "saweria.co/dikatech · external alternative",
     qris: "Dika Code static QRIS · scan & pay directly",
     usageTitle: "Your donation funds",

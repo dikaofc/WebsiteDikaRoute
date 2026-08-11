@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Package, Search, Loader2, AlertCircle, GitCommitHorizontal, ExternalLink } from "lucide-react";
+import { Package, Search, Loader2, AlertCircle, GitCommitHorizontal, ExternalLink, RotateCcw } from "lucide-react";
 import { api, type ChangelogRelease, type ChangelogResponse } from "../lib/api";
 import { Reveal, PageHero, GradientTitle, GlassSkeleton } from "../lib/ui";
 import clsx from "clsx";
@@ -41,24 +41,37 @@ function ChangelogSkeleton() {
   );
 }
 
+// Cache modul: bila API gagal sementara, rilis terakhir tetap tampil.
+let cachedReleases: ChangelogRelease[] | null = null;
+let cachedMeta: Pick<ChangelogResponse, "source" | "fetchedAt"> | null = null;
+
 export default function Changelog() {
   const { dict } = useLang();
   const p = dict.changelogPage;
-  const [meta, setMeta] = useState<Pick<ChangelogResponse, "source" | "fetchedAt"> | null>(null);
-  const [releases, setReleases] = useState<ChangelogRelease[]>([]);
+  const [meta, setMeta] = useState<Pick<ChangelogResponse, "source" | "fetchedAt"> | null>(cachedMeta);
+  const [releases, setReleases] = useState<ChangelogRelease[]>(cachedReleases ?? []);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
+    setError("");
     api
       .changelog()
       .then((res) => {
-        setReleases(res.releases);
-        setMeta({ source: res.source, fetchedAt: res.fetchedAt });
+        const list = Array.isArray(res.releases) ? res.releases : [];
+        cachedReleases = list;
+        cachedMeta = { source: res.source, fetchedAt: res.fetchedAt };
+        setReleases(list);
+        setMeta(cachedMeta);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Gagal memuat changelog"))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, []);
 
   const filtered = releases.filter((r) => {
@@ -114,13 +127,18 @@ export default function Changelog() {
       )}
 
       {error && (
-        <div className="glass mx-auto flex max-w-lg items-center gap-3 rounded-2xl border-rose-400/30 px-5 py-4 text-sm text-rose-300">
-          <AlertCircle size={17} />
-          {error}
+        <div className="glass mx-auto flex max-w-lg flex-col items-center gap-4 rounded-2xl border-rose-400/30 px-5 py-6 text-sm text-rose-300">
+          <div className="flex items-center gap-3">
+            <AlertCircle size={17} />
+            {error}
+          </div>
+          <button onClick={load} className="btn btn-secondary btn-sm">
+            <RotateCcw size={13} /> {p.retry}
+          </button>
         </div>
       )}
 
-      {!loading && !error && (
+      {!loading && releases.length > 0 && (
         <div className="relative">
           <div className="absolute bottom-0 left-[13px] top-2 w-px bg-gradient-to-b from-indigo-500/60 via-white/10 to-transparent" />
           <div className="space-y-8">
