@@ -2,7 +2,6 @@ import express from "express";
 import path from "node:path";
 import fs from "node:fs";
 import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
-import { fileURLToPath } from "node:url";
 import { isMailConfigured, sendMail, welcomeEmailHtml, releaseEmailHtml } from "./mailer.ts";
 import { loadEnv } from "./env.ts";
 import { createPaymentQrSafe, paidStatusSafe, saweriaConfig } from "./saweria.ts";
@@ -13,19 +12,16 @@ import QRCode from "qrcode";
 // seperti BROADCAST_TOKEN dievaluasi.
 loadEnv();
 
-// CJS-safe path resolution: Vercel me-bundle fungsi sebagai CJS, di mana
-// import.meta.url = undefined (esbuild) → fallback ke process.cwd().
-// Native ESM (tsx / npm start) memakai import.meta.url seperti biasa.
-const srcDir =
-  typeof import.meta.url === "string"
-    ? path.dirname(fileURLToPath(import.meta.url))
-    : process.cwd();
-const root = path.resolve(srcDir, "..");
+// Path resolution TANPA import.meta.url — Vercel meng-compile fungsi ke CJS
+// di mana referensi `import.meta` bisa SyntaxError (tergantung compiler) atau
+// undefined (esbuild). process.cwd() aman di semua mode eksekusi:
+//  - Vercel (bundle CJS / native ESM): cwd = root fungsi (/var/task)
+//  - Lokal (npm start / tsx dari root): cwd = folder proyek
+const root = process.cwd();
 const DATA_DIR = (() => {
   const candidates = [
-    path.join(srcDir, "data"),                  // lokal: <root>/server/data
-    path.join(process.cwd(), "server", "data"), // Vercel: server/data ikut bundle
-    path.join(process.cwd(), "data"),
+    path.join(root, "server", "data"), // lokal & Vercel (data ikut includeFiles)
+    path.join(root, "data"),
   ];
   for (const c of candidates) {
     try {

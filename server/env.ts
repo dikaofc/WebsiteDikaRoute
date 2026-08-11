@@ -1,14 +1,14 @@
 import path from "node:path";
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
 
-// CJS-safe: saat fungsi di-bundle oleh Vercel (CJS), import.meta.url = undefined
-// (esbuild mengubahnya jadi objek kosong) → fallback ke process.cwd().
-// Native ESM (tsx / npm start) tetap memakai import.meta.url → root = proyek.
-const root =
-  typeof import.meta.url === "string"
-    ? path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
-    : process.cwd();
+/**
+ * Root proyek. Sengaja TIDAK memakai import.meta.url — Vercel meng-compile
+ * fungsi serverless ke CJS di mana referensi `import.meta` bisa menjadi
+ * SyntaxError (tergantung compiler) atau undefined (esbuild). process.cwd()
+ * aman di semua mode: di Vercel cwd = root fungsi (/var/task), di lokal
+ * (npm start / tsx dari root proyek) cwd = folder proyek.
+ */
+const root = process.cwd();
 
 /** Load `.env` dari root proyek (idempoten, tidak menimpa env yang sudah ada). */
 export function loadEnv() {
