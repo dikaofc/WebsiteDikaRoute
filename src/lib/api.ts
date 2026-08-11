@@ -62,11 +62,26 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     headers: { "Content-Type": "application/json" },
     ...init,
   });
+
+  // Cegah pesan mentah "JSON.parse: unexpected character…" saat respons bukan
+  // JSON (mis. index.html SPA fallback atau halaman error serverless yang
+  // dikirim dengan status 2xx). Semua body dibaca sebagai teks lalu di-parse
+  // aman — kegagalan parse diperlakukan sebagai body kosong.
+  const parseJson = async (): Promise<unknown> => {
+    const text = await res.text();
+    if (!text.trim()) return {};
+    try {
+      return JSON.parse(text);
+    } catch {
+      return {};
+    }
+  };
+
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error((body as { error?: string }).error || `Request gagal (${res.status})`);
+    const body = (await parseJson()) as { error?: string };
+    throw new Error(body?.error || `Request gagal (${res.status})`);
   }
-  return res.json() as Promise<T>;
+  return (await parseJson()) as T;
 }
 
 export const api = {

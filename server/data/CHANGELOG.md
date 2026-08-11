@@ -6,6 +6,12 @@ File ini juga dirender di dalam dashboard aplikasi (halaman Changelog).
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/) dan versi
 mengikuti [Semantic Versioning](https://semver.org/).
 
+## [3.8.69] - 2026-08-11
+
+### Added
+
+- Vercel deployment support (preview/demo) — `vercel.json`, `scripts/deploy/` build/install commands, optional GitHub Actions workflow, and `docs/ops/vercel-deployment-guide.md`. Runs a plain `next build` (no standalone assembly) and disables standalone output on Vercel (`VERCEL=1`); the app boots in its existing `isCloud` in-memory mode.
+
 ## [3.8.68] - 2026-08-10
 
 ### Fixed

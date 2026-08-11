@@ -26,7 +26,7 @@ import { useLang } from "../i18n";
 function VersionBadge() {
   const { dict } = useLang();
   const h = dict.hero;
-  const [version, setVersion] = useState("3.8.68");
+  const [version, setVersion] = useState("3.8.69");
   const [live, setLive] = useState(false);
 
   useEffect(() => {
