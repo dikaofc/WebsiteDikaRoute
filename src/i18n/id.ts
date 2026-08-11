@@ -249,6 +249,7 @@ export const id = {
     eyebrow: "Interactive Demo",
     title: ["Coba ", "DikaRoute", " langsung"],
     desc: "Simulasi request nyata yang di-streaming dari backend Express via SSE — lihat pipeline routing, kompresi, dan guard bekerja step-by-step.",
+    demoNote: "Mode demo: backend gateway AI belum terhubung, jadi respons disimulasikan untuk memperlihatkan pipeline routing DikaRoute via streaming SSE nyata.",
     unavailable: {
       badge: "Sedang dalam pengembangan",
       title1: "PLAYGROUND IS NOT",
@@ -403,6 +404,7 @@ export const id = {
     empty1: "Belum ada laporan yang cocok.",
     empty2: "Jadilah yang pertama melaporkan!",
     loading: "Memuat forum…",
+    retry: "Coba lagi",
     note: "Issue dengan vote terbanyak diprioritaskan maintainer. Pastikan mencari dulu sebelum melaporkan agar tidak duplikat.",
     justNow: "baru saja",
     hoursAgo: "jam lalu",

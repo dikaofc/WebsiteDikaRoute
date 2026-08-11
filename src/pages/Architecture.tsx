@@ -35,7 +35,7 @@ export default function Architecture() {
           {a.strategies.items.map((s, i) => (
             <Reveal key={s.name} delay={i * 0.06}>
               <div className="glass-2 glass-hover group relative overflow-hidden rounded-2xl p-6">
-                <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-indigo-500/10 blur-2xl transition-all group-hover:bg-indigo-500/25" />
+                <div className="absolute -right-3 -top-3 h-10 w-10 rotate-12 bg-indigo-500/15 transition-all group-hover:rotate-45 group-hover:bg-indigo-500/30" />
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-xs font-bold text-accent">0{i + 1}</span>
                   <h3 className="font-display text-base font-semibold text-white">{s.name}</h3>
@@ -49,9 +49,9 @@ export default function Architecture() {
 
       {/* CTA */}
       <Reveal delay={0.15}>
-        <div className="relative mt-16 overflow-hidden rounded-[2rem] border border-indigo-400/25 bg-gradient-to-br from-indigo-600/20 via-ink-900 to-ink-950 p-10 text-center sm:p-14">
+        <div className="relative mt-16 overflow-hidden rounded-2xl border-2 border-[var(--bd)] bg-gradient-to-br from-indigo-600/20 via-ink-900 to-ink-950 p-10 text-center shadow-[4px_4px_0_0_var(--sh)] sm:p-14">
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
-          <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[36rem] -translate-x-1/2 rounded-full bg-indigo-500/10 blur-[100px]" />
+          <div className="pointer-events-none absolute -top-16 left-1/2 h-36 w-64 -translate-x-1/2 rotate-12 bg-indigo-500/10" />
           <div className="relative">
             <Workflow size={28} className="mx-auto text-accent" />
             <h2 className="mt-5 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">

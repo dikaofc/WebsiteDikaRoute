@@ -9,7 +9,7 @@ export default function NotFound() {
   return (
     <div className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 pt-24 pb-20">
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-600/[0.07] blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rotate-12 bg-indigo-500/10" />
       <div className="relative text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}

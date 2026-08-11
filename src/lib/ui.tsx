@@ -238,7 +238,7 @@ export function GlassTabs<T extends string>({
             {selected && (
               <motion.span
                 layoutId={`glass-tab-${id}`}
-                className="absolute inset-0 rounded-[9px] border border-white/10 bg-white/[0.09] shadow-sm"
+                className="absolute inset-0 rounded-[7px] bg-primary border-2 border-[var(--bd)] shadow-[2px_2px_0_0_var(--sh)]"
                 transition={{ type: "spring", bounce: 0.18, duration: 0.5 }}
               />
             )}
@@ -348,7 +348,7 @@ export function GlassModal({
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
             transition={{ duration: 0.3, ease: EASE }}
             className={clsx(
-              "glass-strong relative w-full max-w-lg rounded-[1.75rem] p-6 outline-none sm:p-8",
+              "glass-strong relative w-full max-w-lg rounded-2xl p-6 outline-none sm:p-8",
               "max-h-[88vh] overflow-y-auto",
               className
             )}
@@ -400,8 +400,8 @@ export function GlassSheet({
 
   const isBottom = side === "bottom";
   const panelClass = isBottom
-    ? "inset-x-0 bottom-0 rounded-t-[1.75rem] max-h-[85vh]"
-    : "left-0 top-0 h-full w-[19rem] rounded-r-[1.75rem]";
+    ? "inset-x-0 bottom-0 rounded-t-2xl max-h-[85vh]"
+    : "left-0 top-0 h-full w-[19rem] rounded-r-2xl";
 
   return createPortal(
     <AnimatePresence>
@@ -471,10 +471,9 @@ export function PageHero({
 }) {
   return (
     <Reveal>
-      <div className="relative overflow-hidden rounded-[1.75rem] px-6 py-12 sm:px-12 sm:py-16">
-        <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" />
-        <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[32rem] -translate-x-1/2 rounded-full bg-primary/[0.08] blur-[90px]" />
-        <div className="glass-strong relative h-full rounded-[1.75rem] px-6 py-10 sm:px-12 sm:py-14">
+      <div className="relative overflow-hidden rounded-2xl px-6 py-12 sm:px-12 sm:py-16">
+        <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
+        <div className="glass-strong relative h-full rounded-2xl px-6 py-10 sm:px-12 sm:py-14">
           <div className={clsx("max-w-3xl", center && "mx-auto text-center")}>
             <motion.span
               initial={{ opacity: 0, y: 10 }}
@@ -565,8 +564,8 @@ export function CodeBlock({
   className?: string;
 }) {
   return (
-    <div className={clsx("rounded-2xl border border-white/10 bg-ink-900/90 overflow-hidden backdrop-blur-md shadow-sm", className)}>
-      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.04] px-4 py-2.5">
+    <div className={clsx("overflow-hidden rounded-xl border-2 border-[var(--bd)] bg-ink-900 shadow-[3px_3px_0_0_var(--sh)]", className)}>
+      <div className="flex items-center gap-2 border-b-2 border-[var(--bd)] bg-glass-ter-bg px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />

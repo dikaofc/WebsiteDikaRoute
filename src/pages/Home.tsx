@@ -71,13 +71,12 @@ function Hero() {
 
   return (
     <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40">
-      {/* background */}
+      {/* background — bentuk datar, tanpa blur (hemat GPU & baterai) */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="bg-grid absolute inset-0 animate-grid-pan opacity-60" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(99,102,241,0.22),transparent)]" />
-        <div className="absolute -left-32 top-1/3 h-96 w-96 animate-float rounded-full bg-indigo-600/10 blur-[110px]" />
-        <div className="absolute -right-24 top-16 h-80 w-80 animate-float-slow rounded-full bg-accent/15 blur-[110px]" />
-        <div className="absolute bottom-0 left-1/3 h-72 w-72 animate-float rounded-full bg-pink-500/5 blur-[100px]" />
+        <div className="bg-grid absolute inset-0 animate-grid-pan opacity-50" />
+        <div className="absolute -left-20 top-1/3 h-40 w-40 -rotate-12 bg-indigo-500/10" />
+        <div className="absolute -right-16 top-16 h-32 w-32 rotate-45 bg-accent/10" />
+        <div className="absolute bottom-10 left-1/3 h-28 w-28 rotate-6 bg-pink-500/10" />
       </div>
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
@@ -159,7 +158,7 @@ function Hero() {
           className="relative"
         >
           <Terminal />
-          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-tr from-indigo-500/20 to-accent/20 blur-2xl" />
+          <div className="pointer-events-none absolute -inset-3 -z-10 rounded-2xl border-2 border-dashed border-[var(--bd)] bg-indigo-500/[0.06]" />
         </motion.div>
       </div>
     </section>
@@ -211,7 +210,7 @@ function Architecture() {
         {a.strategies.items.map((s, i) => (
           <Reveal key={s.name} delay={i * 0.06}>
             <div className="glass-2 glass-hover group relative overflow-hidden rounded-2xl p-6">
-              <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-indigo-500/10 blur-2xl transition-all group-hover:bg-indigo-500/25" />
+              <div className="absolute -right-3 -top-3 h-10 w-10 rotate-12 bg-indigo-500/15 transition-all group-hover:rotate-45 group-hover:bg-indigo-500/30" />
               <div className="flex items-center gap-3">
                 <span className="font-mono text-xs font-bold text-accent">0{i + 1}</span>
                 <h3 className="font-display text-base font-semibold text-white">{s.name}</h3>
@@ -230,8 +229,8 @@ function Compression() {
   const c = dict.compression;
   return (
     <section className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6">
-      <div className="glass relative overflow-hidden rounded-3xl p-8 sm:p-12">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-pink-500/[0.07] blur-[90px]" />
+      <div className="glass relative overflow-hidden rounded-2xl p-8 sm:p-12">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rotate-12 bg-pink-500/10" />
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
             <Reveal>
@@ -448,9 +447,9 @@ function CTA() {
   return (
     <section className="relative mx-auto max-w-5xl px-4 py-24 sm:px-6">
       <Reveal>
-        <div className="relative overflow-hidden rounded-[2rem] border border-indigo-400/25 bg-gradient-to-br from-indigo-600/20 via-ink-900 to-ink-950 p-10 text-center sm:p-16">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-[var(--bd)] bg-gradient-to-br from-indigo-600/20 via-ink-900 to-ink-950 p-10 text-center shadow-[4px_4px_0_0_var(--sh)] sm:p-16">
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
-          <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[36rem] -translate-x-1/2 rounded-full bg-indigo-500/10 blur-[100px]" />
+          <div className="pointer-events-none absolute -top-16 left-1/2 h-36 w-64 -translate-x-1/2 rotate-12 bg-indigo-500/10" />
           <div className="relative">
             <TerminalSquare size={30} className="mx-auto text-accent" />
             <h2 className="mt-6 font-display text-3xl font-bold tracking-tight text-white sm:text-5xl">

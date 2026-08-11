@@ -17,6 +17,7 @@ import {
   Package,
   MessageSquare,
   RefreshCw,
+  Info,
 } from "lucide-react";
 import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, GlassSelect, GlassSkeleton, btnClass } from "../lib/ui";
@@ -45,7 +46,7 @@ function UnavailableScreen({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="relative overflow-hidden rounded-3xl">
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
-      <div className="pointer-events-none absolute left-1/2 top-1/3 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-600/[0.07] blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 h-40 w-40 -translate-x-1/2 rotate-12 bg-indigo-500/10" />
 
       <motion.div
         initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -239,6 +240,11 @@ export default function Playground() {
       ) : availability === "unavailable" ? (
         <UnavailableScreen onRetry={retryStatus} />
       ) : (
+        <>
+        <div className="glass-3 mb-6 flex items-start gap-3 rounded-xl px-4 py-3 text-xs leading-relaxed text-slate-500">
+          <Info size={14} className="mt-0.5 shrink-0 text-amber-400" />
+          {p.demoNote}
+        </div>
         <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
         {/* config panel */}
         <Reveal>
@@ -439,6 +445,7 @@ export default function Playground() {
           </div>
         </Reveal>
         </div>
+        </>
       )}
     </div>
   );

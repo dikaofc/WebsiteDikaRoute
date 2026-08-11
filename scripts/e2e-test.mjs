@@ -1,5 +1,9 @@
 // End-to-end test — spawn server child, test endpoints, kill server.
+// Data ditulis ke direktori sementara (DATA_DIR) agar tidak mencemari
+// data asli di server/data/ (issues, contact, donasi, newsletter).
 import { spawn } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,12 +12,20 @@ const root = path.resolve(__dirname, "..");
 const PORT = 4100;
 const BASE = `http://localhost:${PORT}`;
 
+// Seed: salin data asli ke folder temp (agar endpoint yang butuh seed
+// seperti /api/issues tetap terisi), lalu buang setelah tes selesai.
+const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "dikaroute-e2e-"));
+try {
+  fs.cpSync(path.join(root, "server", "data"), dataDir, { recursive: true });
+} catch {}
+
 const server = spawn(process.execPath, ["--import", "tsx", "server/index.ts"], {
   cwd: root,
   env: {
     ...process.env,
     PORT: String(PORT),
     NODE_ENV: "production",
+    DATA_DIR: dataDir,
     MAIL_DISABLED: "1",
     SAWERIA_MOCK: "1", // tes pembayaran tanpa menyentuh Saweria
     SAWERIA_WEBHOOK_SECRET: "e2e-secret", // supaya jalur webhook aktif & bisa diuji
@@ -342,11 +354,17 @@ async function main() {
   try {
     server.kill("SIGTERM");
   } catch {}
+  try {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  } catch {}
   process.exit(failed ? 1 : 0);
 }
 
 main().catch((e) => {
   console.error("E2E crashed:", e);
   server.kill("SIGTERM");
+  try {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  } catch {}
   process.exit(1);
 });

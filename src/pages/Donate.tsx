@@ -69,7 +69,7 @@ function StaticQrPanel({
       className="mx-auto max-w-lg"
     >
       <div className="glass relative overflow-hidden rounded-3xl p-7 text-center sm:p-9">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-pink-500/[0.07] blur-[80px]" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rotate-12 bg-pink-500/10" />
 
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-pink-400/30 bg-pink-500/10 text-pink-300 glow-ring">
           <ScanLine size={26} />
@@ -246,7 +246,7 @@ export default function Donate() {
                 className="mx-auto max-w-lg"
               >
                 <div className="glass relative overflow-hidden rounded-3xl p-10 text-center sm:p-12">
-                  <div className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-emerald-500/[0.07] blur-[80px]" />
+                  <div className="pointer-events-none absolute -left-10 -bottom-10 h-28 w-28 -rotate-12 bg-emerald-500/10" />
                   <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/10 text-emerald-300 glow-ring">
                     <PartyPopper size={28} />
                   </div>

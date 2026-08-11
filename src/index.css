@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Tipografi ala sistem Apple/iOS — tanpa font eksternal */
+  /* Tipografi sistem — tanpa font eksternal (ringan, latensi nol) */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
@@ -56,6 +56,14 @@
   --color-orange-400: var(--orange-400);
   --color-orange-500: var(--orange-500);
 
+  /* Sudut lebih tegas (Neo-Brutalisme) — override skala radius Tailwind */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+  --radius-xl: 10px;
+  --radius-2xl: 14px;
+  --radius-3xl: 18px;
+
   --animate-marquee: marquee 55s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
   --animate-float-slow: float 11s ease-in-out infinite;
@@ -63,8 +71,6 @@
   --animate-grid-pan: gridPan 26s linear infinite;
   --animate-spin-slow: spin 14s linear infinite;
   --animate-flow-x: flowX 1.6s linear infinite;
-  --animate-drift-1: driftA 26s ease-in-out infinite alternate;
-  --animate-drift-2: driftB 32s ease-in-out infinite alternate;
   --animate-shimmer: shimmer 1.8s linear infinite;
 
   @keyframes marquee {
@@ -73,7 +79,7 @@
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
+    50% { transform: translateY(-10px); }
   }
   @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -87,15 +93,6 @@
     from { left: -12%; }
     to { left: 108%; }
   }
-  /* blob ambience — hanya transform/opacity (GPU-friendly) */
-  @keyframes driftA {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to { transform: translate3d(60px, -40px, 0) scale(1.08); }
-  }
-  @keyframes driftB {
-    from { transform: translate3d(0, 0, 0) scale(1.05); }
-    to { transform: translate3d(-50px, 30px, 0) scale(0.96); }
-  }
   @keyframes shimmer {
     from { background-position: 200% 0; }
     to { background-position: -200% 0; }
@@ -103,42 +100,44 @@
 }
 
 /* =====================================================================
-   DESIGN TOKENS — Fluid Glass System (light)
+   DESIGN TOKENS — Neo-Brutalisme ala Saweria (light)
+   Bayangan kotak tajam tanpa blur, border hitam solid, warna ceria,
+   sudut tipis, tipografi tebal.
    ===================================================================== */
 :root {
   color-scheme: light;
 
   /* netral */
-  --white: #1a1d24;
-  --slate-200: #33373f;
-  --slate-300: #454a53;
-  --slate-400: #5c616b;
-  --slate-500: #787d87;
-  --slate-600: #959aa3;
+  --white: #16161a;
+  --slate-200: #27272d;
+  --slate-300: #3f3f47;
+  --slate-400: #575761;
+  --slate-500: #74747f;
+  --slate-600: #92929c;
 
-  /* latar solid (dipakai token & fallback) */
-  --ink-950: #f2f4f8;
-  --ink-900: #ffffff;
-  --ink-800: #e9ecf2;
-  --ink-700: #e0e4ec;
-  --ink-600: #d3d9e3;
+  /* latar solid */
+  --ink-950: #faf6ec;   /* latar halaman — krem hangat */
+  --ink-900: #fffdf6;   /* permukaan utama */
+  --ink-800: #f2ead9;
+  --ink-700: #e7dcc4;
+  --ink-600: #d8cab0;
 
   /* aksen */
   --primary: #4f46e5;
-  --primary-light: #6d64ea;
-  --accent: #0e7490;
+  --primary-light: #6366f1;
+  --accent: #0891b2;
   --glow: #db2777;
 
   /* hue */
   --indigo-200: #3730a3;
-  --indigo-300: #4f46e5;
-  --indigo-400: #5b52e8;
+  --indigo-300: #4338ca;
+  --indigo-400: #4f46e5;
   --indigo-500: #6366f1;
-  --indigo-600: #6f66f2;
+  --indigo-600: #818cf8;
   --cyan-300: #0e7490;
   --cyan-400: #0891b2;
   --cyan-500: #06b6d4;
-  --pink-200: #be185d;
+  --pink-200: #9d174d;
   --pink-300: #be185d;
   --pink-400: #db2777;
   --pink-500: #ec4899;
@@ -155,48 +154,32 @@
   --orange-400: #ea580c;
   --orange-500: #f97316;
 
-  /* ----- Fluid Glass hierarchy ----- */
-  --bg-base: #eef1f6;
-  --bg-glow-a: rgba(99, 102, 241, 0.12);
-  --bg-glow-b: rgba(14, 116, 144, 0.08);
-  --bg-glow-c: rgba(219, 39, 119, 0.06);
+  /* ----- Neo-Brutalisme surfaces ----- */
+  --bg-base: #faf6ec;
 
-  /* primary glass — nav, panel utama, dialog */
-  --glass-pri-bg: rgba(255, 255, 255, 0.62);
-  --glass-pri-border: rgba(255, 255, 255, 0.78);
-  --glass-pri-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
-  --glass-pri-blur: 26px;
-  --glass-pri-sat: 1.55;
+  --glass-pri-bg: #ffffff;
+  --glass-pri-border: #16161a;
+  --glass-sec-bg: #fffdf6;
+  --glass-sec-border: #16161a;
+  --glass-ter-bg: #f2ead9;
+  --glass-ter-border: #16161a;
+  --glass-strong-bg: #ffffff;
+  --glass-strong-border: #16161a;
+  --glass-field-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
 
-  /* secondary glass — kartu, kontrol, widget */
-  --glass-sec-bg: rgba(255, 255, 255, 0.5);
-  --glass-sec-border: rgba(15, 23, 42, 0.08);
-  --glass-sec-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.55);
-  --glass-sec-blur: 16px;
-  --glass-sec-sat: 1.4;
+  /* border & bayangan keras (hard offset shadow) */
+  --bd: #16161a;
+  --sh: #16161a;
 
-  /* tertiary glass — badge, chip, input */
-  --glass-ter-bg: rgba(255, 255, 255, 0.42);
-  --glass-ter-border: rgba(15, 23, 42, 0.07);
-  --glass-ter-blur: 10px;
-  --glass-ter-sat: 1.3;
-  --glass-field-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-
-  /* strong glass — modal / sheet / popover (lebih buram agar terbaca) */
-  --glass-strong-bg: rgba(255, 255, 255, 0.8);
-  --glass-strong-border: rgba(255, 255, 255, 0.9);
-  --glass-strong-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
-
-  /* blur strength */
   --blur-lg: 26px;
   --blur-md: 16px;
   --blur-sm: 10px;
 
-  /* shadows — kalem & bertingkat */
-  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05), 0 12px 32px -18px rgba(15, 23, 42, 0.18);
-  --shadow-lift: 0 2px 4px rgba(15, 23, 42, 0.06), 0 20px 44px -20px rgba(15, 23, 42, 0.22);
-  --shadow-modal: 0 4px 12px rgba(15, 23, 42, 0.08), 0 36px 80px -28px rgba(15, 23, 42, 0.35);
-  --shadow-pop: 0 6px 20px -10px rgba(15, 23, 42, 0.28);
+  /* shadows — tajam, kotak, tanpa blur */
+  --shadow-soft: 4px 4px 0 0 var(--sh);
+  --shadow-lift: 6px 6px 0 0 var(--sh);
+  --shadow-modal: 8px 8px 0 0 var(--sh);
+  --shadow-pop: 5px 5px 0 0 var(--sh);
 
   /* motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -213,40 +196,40 @@
   --z-sheet: 85;
   --z-toast: 90;
 
-  --grid-line: rgba(30, 41, 59, 0.05);
+  --grid-line: rgba(22, 22, 26, 0.12);
   --grad-text-from: #4f46e5;
-  --grad-text-to: #7c3aed;
-  --sel-bg: rgba(79, 70, 229, 0.16);
-  --sel-fg: #1a1d24;
-  --scroll-track: #e4e8ef;
-  --scroll-thumb: #c4cbd6;
-  --scroll-thumb-hover: #a0a8b5;
-  --switch-off: rgba(15, 23, 42, 0.16);
+  --grad-text-to: #db2777;
+  --sel-bg: rgba(79, 70, 229, 0.18);
+  --sel-fg: #16161a;
+  --scroll-track: #efe7d6;
+  --scroll-thumb: #c9bda3;
+  --scroll-thumb-hover: #a8997d;
+  --switch-off: rgba(22, 22, 26, 0.18);
 }
 
 /* =====================================================================
-   DESIGN TOKENS — Fluid Glass System (dark)
+   DESIGN TOKENS — Neo-Brutalisme (dark)
    ===================================================================== */
 .dark {
   color-scheme: dark;
 
-  --white: #ffffff;
-  --slate-200: #e2e8f0;
-  --slate-300: #cbd5e1;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-600: #475569;
+  --white: #f2f2f7;
+  --slate-200: #d6d6df;
+  --slate-300: #b5b5c1;
+  --slate-400: #8e8e9e;
+  --slate-500: #6b6b7a;
+  --slate-600: #52525e;
 
-  --ink-950: #0a0c14;
-  --ink-900: #10131d;
-  --ink-800: #171b28;
-  --ink-700: #1f2433;
-  --ink-600: #2a3042;
+  --ink-950: #101016;
+  --ink-900: #18181f;
+  --ink-800: #20202a;
+  --ink-700: #2a2a37;
+  --ink-600: #383847;
 
-  --primary: #6366f1;
-  --primary-light: #8b8ef7;
+  --primary: #818cf8;
+  --primary-light: #a5b4fc;
   --accent: #22d3ee;
-  --glow: #ec4899;
+  --glow: #f472b6;
 
   --indigo-200: #c7d2fe;
   --indigo-300: #a5b4fc;
@@ -273,52 +256,40 @@
   --orange-400: #fb923c;
   --orange-500: #f97316;
 
-  /* ----- Fluid Glass hierarchy (dark) ----- */
-  --bg-base: #0a0c14;
-  --bg-glow-a: rgba(99, 102, 241, 0.11);
-  --bg-glow-b: rgba(34, 211, 238, 0.07);
-  --bg-glow-c: rgba(236, 72, 153, 0.05);
+  /* ----- Neo-Brutalisme surfaces (dark) ----- */
+  --bg-base: #101016;
 
-  --glass-pri-bg: rgba(255, 255, 255, 0.055);
-  --glass-pri-border: rgba(255, 255, 255, 0.11);
-  --glass-pri-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
-  --glass-pri-blur: 26px;
-  --glass-pri-sat: 1.55;
+  --glass-pri-bg: #1b1b24;
+  --glass-pri-border: #3d3d4d;
+  --glass-sec-bg: #20202a;
+  --glass-sec-border: #3d3d4d;
+  --glass-ter-bg: #272733;
+  --glass-ter-border: #4a4a5e;
+  --glass-strong-bg: #191922;
+  --glass-strong-border: #3d3d4d;
+  --glass-field-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 
-  --glass-sec-bg: rgba(255, 255, 255, 0.04);
-  --glass-sec-border: rgba(255, 255, 255, 0.08);
-  --glass-sec-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  --glass-sec-blur: 16px;
-  --glass-sec-sat: 1.4;
-
-  --glass-ter-bg: rgba(255, 255, 255, 0.03);
-  --glass-ter-border: rgba(255, 255, 255, 0.06);
-  --glass-ter-blur: 10px;
-  --glass-ter-sat: 1.3;
-  --glass-field-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
-
-  --glass-strong-bg: rgba(24, 28, 41, 0.74);
-  --glass-strong-border: rgba(255, 255, 255, 0.12);
-  --glass-strong-hi: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  --bd: #3d3d4d;
+  --sh: rgba(0, 0, 0, 0.6);
 
   --blur-lg: 26px;
   --blur-md: 16px;
   --blur-sm: 10px;
 
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 36px -20px rgba(0, 0, 0, 0.5);
-  --shadow-lift: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 50px -24px rgba(0, 0, 0, 0.6);
-  --shadow-modal: 0 4px 14px rgba(0, 0, 0, 0.45), 0 40px 90px -30px rgba(0, 0, 0, 0.7);
-  --shadow-pop: 0 8px 24px -10px rgba(0, 0, 0, 0.55);
+  --shadow-soft: 4px 4px 0 0 var(--sh);
+  --shadow-lift: 6px 6px 0 0 var(--sh);
+  --shadow-modal: 8px 8px 0 0 var(--sh);
+  --shadow-pop: 5px 5px 0 0 var(--sh);
 
-  --grid-line: rgba(148, 163, 184, 0.07);
+  --grid-line: rgba(255, 255, 255, 0.08);
   --grad-text-from: #a5b4fc;
-  --grad-text-to: #8b7cf6;
-  --sel-bg: rgba(99, 102, 241, 0.42);
+  --grad-text-to: #f472b6;
+  --sel-bg: rgba(129, 140, 248, 0.42);
   --sel-fg: #ffffff;
-  --scroll-track: #0a0c14;
-  --scroll-thumb: #2a3042;
+  --scroll-track: #101016;
+  --scroll-thumb: #2e2e3c;
   --scroll-thumb-hover: #4f46e5;
-  --switch-off: rgba(148, 163, 184, 0.28);
+  --switch-off: rgba(148, 163, 184, 0.3);
 }
 
 /* =====================================================================
@@ -327,7 +298,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg-base);
-  transition: background-color 0.35s ease;
+  transition: background-color 0.3s ease;
   overflow-x: clip;
 }
 
@@ -337,14 +308,10 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition: background-color 0.35s ease, color 0.35s ease;
-  /* background ambience: radial gradient kalem + difusi warna */
+  transition: background-color 0.3s ease, color 0.3s ease;
   background:
-    radial-gradient(1100px 700px at 85% -5%, var(--bg-glow-a), transparent 60%),
-    radial-gradient(900px 650px at -10% 25%, var(--bg-glow-b), transparent 55%),
-    radial-gradient(1000px 800px at 50% 115%, var(--bg-glow-c), transparent 60%),
+    radial-gradient(900px 520px at 85% -5%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 60%),
     var(--bg-base);
-  background-attachment: fixed;
 }
 
 ::selection {
@@ -353,7 +320,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--primary) 70%, transparent);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -362,167 +329,154 @@ body {
 h1, h2, h3, p { text-wrap: pretty; }
 
 /* =====================================================================
-   FLUID GLASS — hierarki permukaan
+   SURFACES — kartu tegas ber-border hitam + bayangan kotak
    ===================================================================== */
 
-/* Primary glass — navigasi, panel utama, kartu penting */
+/* Primary surface — nav, panel utama, kartu penting */
 .glass {
   background: var(--glass-pri-bg);
-  border: 1px solid var(--glass-pri-border);
-  box-shadow: var(--glass-pri-hi), var(--shadow-soft);
-  -webkit-backdrop-filter: blur(var(--glass-pri-blur)) saturate(var(--glass-pri-sat));
-  backdrop-filter: blur(var(--glass-pri-blur)) saturate(var(--glass-pri-sat));
-  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.3s ease;
+  border: 2px solid var(--glass-pri-border);
+  box-shadow: var(--shadow-soft);
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-/* Secondary glass — kartu sekunder, kontrol, widget */
+/* Secondary surface — kartu sekunder, kontrol, widget */
 .glass-2 {
   background: var(--glass-sec-bg);
-  border: 1px solid var(--glass-sec-border);
-  box-shadow: var(--glass-sec-hi), 0 6px 20px -16px rgba(15, 23, 42, 0.18);
-  -webkit-backdrop-filter: blur(var(--glass-sec-blur)) saturate(var(--glass-sec-sat));
-  backdrop-filter: blur(var(--glass-sec-blur)) saturate(var(--glass-sec-sat));
-  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.3s ease;
+  border: 2px solid var(--glass-sec-border);
+  box-shadow: 3px 3px 0 0 var(--sh);
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-/* Tertiary glass — badge, chip, kontrol kecil */
+/* Tertiary surface — badge, chip, kontrol kecil */
 .glass-3 {
   background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  -webkit-backdrop-filter: blur(var(--glass-ter-blur)) saturate(var(--glass-ter-sat));
-  backdrop-filter: blur(var(--glass-ter-blur)) saturate(var(--glass-ter-sat));
-  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  border: 2px solid var(--glass-ter-border);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.15s ease;
 }
 
-/* Strong glass — modal / sheet / popover (lebih buram agar konten terbaca) */
+/* Strong surface — modal / sheet / popover */
 .glass-strong {
   background: var(--glass-strong-bg);
-  border: 1px solid var(--glass-strong-border);
-  box-shadow: var(--glass-strong-hi), var(--shadow-modal);
-  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(1.6);
-  backdrop-filter: blur(var(--blur-lg)) saturate(1.6);
+  border: 2px solid var(--glass-strong-border);
+  box-shadow: var(--shadow-modal);
 }
 
-/* Hover halus untuk permukaan glass (kartu interaktif) */
+/* Hover untuk permukaan interaktif — geser + bayangan makin tebal */
 .glass-hover {
-  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s var(--ease-out);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s var(--ease-out);
 }
 .glass-hover:hover {
   background: var(--glass-pri-bg);
   border-color: var(--glass-pri-border);
-  box-shadow: var(--glass-pri-hi), var(--shadow-lift);
-  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 0 var(--sh);
+  transform: translate(-1px, -1px);
 }
 .glass-hover:active {
-  transform: translateY(0) scale(0.99);
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 0 transparent;
 }
 
 /* =====================================================================
-   TOMBOL — sistem lengkap
+   TOMBOL — blok tebal, border hitam, bayangan kotak, efek tekan
    ===================================================================== */
-/* Base: konsisten di semua varian */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 700;
   user-select: none;
   white-space: nowrap;
   height: 44px;
   padding-inline: 1.125rem;
-  border-radius: 12px;
+  border-radius: 10px;
+  border: 2px solid var(--bd);
+  box-shadow: 3px 3px 0 0 var(--sh);
   position: relative;
   transition: background-color var(--dur-base) ease, border-color var(--dur-base) ease,
-    box-shadow var(--dur-base) ease, transform 0.15s ease, color var(--dur-base) ease,
+    box-shadow 0.15s ease, transform 0.12s ease, color var(--dur-base) ease,
     opacity var(--dur-base) ease;
 }
 .btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   transform: none !important;
-  box-shadow: none !important;
+  box-shadow: 3px 3px 0 0 var(--sh) !important;
 }
-.btn:active:not(:disabled) { transform: scale(0.975); }
+.btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 0 transparent;
+}
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 0 var(--sh);
+}
 .btn:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--primary) 70%, transparent);
   outline-offset: 2px;
 }
 
-/* Primary — aksen solid ala iOS filled */
+/* Primary — aksen solid cerah */
 .btn-primary, .btn-gradient {
   background: var(--primary);
   color: #fff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  border-color: var(--bd);
 }
 .btn-primary:hover:not(:disabled), .btn-gradient:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--primary) 87%, #000);
-  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--primary) 50%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--primary) 88%, #000);
 }
 
-/* Secondary — glass */
+/* Secondary — putih/krem */
 .btn-secondary, .btn-glass {
-  background: var(--glass-sec-bg);
-  border: 1px solid var(--glass-sec-border);
-  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(1.4);
-  backdrop-filter: blur(var(--blur-md)) saturate(1.4);
-  box-shadow: var(--glass-pri-hi);
+  background: var(--glass-pri-bg);
   color: var(--white);
 }
 .btn-secondary:hover:not(:disabled), .btn-glass:hover:not(:disabled) {
-  background: var(--glass-pri-bg);
-  border-color: var(--glass-pri-border);
-  transform: translateY(-1px);
+  background: var(--glass-sec-bg);
 }
 
-/* Tertiary — chip translucent */
+/* Tertiary — chip */
 .btn-tertiary {
   background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
-  backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
   color: var(--white);
 }
 .btn-tertiary:hover:not(:disabled) {
   background: var(--glass-sec-bg);
-  border-color: var(--glass-sec-border);
-  transform: translateY(-1px);
 }
 
 /* Ghost — transparan */
 .btn-ghost {
   background: transparent;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
   color: var(--slate-300);
 }
 .btn-ghost:hover:not(:disabled) {
   background: color-mix(in srgb, var(--white) 6%, transparent);
   color: var(--white);
+  box-shadow: none;
+  transform: none;
 }
 .btn-ghost:active:not(:disabled) { transform: scale(0.97); }
 
 /* Destructive */
 .btn-danger {
-  background: color-mix(in srgb, var(--rose-500) 88%, #000);
-  color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-}
-.btn-danger:hover:not(:disabled) {
   background: var(--rose-500);
-  transform: translateY(-1px);
+  color: #fff;
 }
+.btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--rose-500) 85%, #000); }
 
 /* Success */
 .btn-success {
-  background: color-mix(in srgb, var(--emerald-500) 86%, #000);
-  color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-}
-.btn-success:hover:not(:disabled) {
   background: var(--emerald-500);
-  transform: translateY(-1px);
+  color: #fff;
 }
+.btn-success:hover:not(:disabled) { background: color-mix(in srgb, var(--emerald-500) 85%, #000); }
 
 /* Icon — kotak persegi untuk aksi ikon */
 .btn-icon {
@@ -537,19 +491,16 @@ h1, h2, h3, p { text-wrap: pretty; }
   border-radius: 9999px;
   background: var(--primary);
   color: #fff;
-  box-shadow: 0 10px 28px -12px color-mix(in srgb, var(--primary) 65%, transparent), var(--glass-pri-hi);
+  box-shadow: 4px 4px 0 0 var(--sh);
 }
 .btn-float:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 32px -12px color-mix(in srgb, var(--primary) 75%, transparent), var(--glass-pri-hi);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 0 var(--sh);
 }
 
 /* Ukuran */
-.btn-sm { height: 36px; padding-inline: 0.875rem; border-radius: 10px; font-size: 13px; }
-.btn-lg { height: 50px; padding-inline: 1.5rem; border-radius: 14px; font-size: 15px; }
-
-/* Tekanan ditegakkan di akhir agar menang atas hover (scale saat ditekan) */
-.btn:active:not(:disabled) { transform: scale(0.975); }
+.btn-sm { height: 36px; padding-inline: 0.875rem; border-radius: 8px; font-size: 13px; }
+.btn-lg { height: 50px; padding-inline: 1.5rem; border-radius: 12px; font-size: 15px; }
 
 /* Loading state */
 .btn.is-loading { pointer-events: none; }
@@ -572,18 +523,15 @@ h1, h2, h3, p { text-wrap: pretty; }
 }
 
 /* =====================================================================
-   FORM KONTROL — glass
+   FORM KONTROL — kotak tegas
    ===================================================================== */
 input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"])),
 textarea,
 select {
-  background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  box-shadow: var(--glass-field-hi);
-  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
-  backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
+  background: var(--glass-pri-bg);
+  border: 2px solid var(--bd);
   color: var(--white);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]))::placeholder,
 textarea::placeholder {
@@ -593,8 +541,8 @@ input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"])):foc
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--primary) 60%, transparent);
-  box-shadow: var(--glass-field-hi), 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+  border-color: var(--primary);
+  box-shadow: 3px 3px 0 0 color-mix(in srgb, var(--primary) 45%, transparent);
 }
 select option {
   background: var(--ink-900);
@@ -603,16 +551,16 @@ select option {
 
 /* state validasi */
 .input-error {
-  border-color: color-mix(in srgb, var(--rose-500) 55%, transparent) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rose-500) 14%, transparent) !important;
+  border-color: var(--rose-500) !important;
+  box-shadow: 3px 3px 0 0 color-mix(in srgb, var(--rose-500) 40%, transparent) !important;
 }
 .input-success {
-  border-color: color-mix(in srgb, var(--emerald-500) 55%, transparent) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--emerald-500) 14%, transparent) !important;
+  border-color: var(--emerald-500) !important;
+  box-shadow: 3px 3px 0 0 color-mix(in srgb, var(--emerald-500) 40%, transparent) !important;
 }
 
 /* =====================================================================
-   SWITCH — toggle ala iOS
+   SWITCH — toggle tegas
    ===================================================================== */
 .switch {
   position: relative;
@@ -622,93 +570,92 @@ select option {
   height: 28px;
   border-radius: 9999px;
   background: var(--switch-off);
-  border: none;
+  border: 2px solid var(--bd);
   cursor: pointer;
   padding: 0;
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  transition: background-color 0.2s ease;
 }
 .switch::after {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 24px;
-  height: 24px;
+  top: 1px;
+  left: 1px;
+  width: 22px;
+  height: 22px;
   border-radius: 9999px;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.28s var(--ease-spring), background-color 0.25s ease;
+  background: var(--glass-pri-bg);
+  border: 2px solid var(--bd);
+  box-shadow: 2px 2px 0 0 var(--sh);
+  transition: transform 0.25s var(--ease-spring), background-color 0.2s ease;
 }
 .switch[aria-checked="true"] {
   background: var(--primary);
 }
-.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.switch[aria-checked="true"]::after { transform: translateX(16px); }
 .switch:disabled { opacity: 0.5; cursor: not-allowed; }
 .switch:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--primary) 70%, transparent);
   outline-offset: 2px;
 }
 
 /* =====================================================================
-   TABS — segmen glass
+   TABS — segmen tegas
    ===================================================================== */
 .tabs {
   display: inline-flex;
   gap: 2px;
   padding: 4px;
-  border-radius: 12px;
-  background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
-  backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
+  border-radius: 10px;
+  background: var(--glass-pri-bg);
+  border: 2px solid var(--bd);
+  box-shadow: 3px 3px 0 0 var(--sh);
 }
 .tab {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border-radius: 9px;
+  border-radius: 7px;
   padding: 0.375rem 0.875rem;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--slate-400);
+  font-weight: 700;
+  color: var(--slate-500);
   cursor: pointer;
   border: none;
   background: transparent;
   white-space: nowrap;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: color 0.18s ease, background-color 0.18s ease;
 }
 .tab:hover:not([aria-selected="true"]) { color: var(--white); }
-.tab[aria-selected="true"] { color: var(--white); }
+.tab[aria-selected="true"] { color: #fff; }
 
 /* =====================================================================
    OVERLAY — modal & sheet
    ===================================================================== */
 .overlay-backdrop {
-  background: color-mix(in srgb, var(--ink-950) 52%, transparent);
-  -webkit-backdrop-filter: blur(8px) saturate(1.2);
-  backdrop-filter: blur(8px) saturate(1.2);
+  background: color-mix(in srgb, var(--ink-950) 55%, transparent);
 }
 
 /* =====================================================================
    KARTU & UTILITAS
    ===================================================================== */
 .card-hover {
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, background-color 0.2s ease;
 }
 .card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lift);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 0 var(--sh);
 }
 
 .glow-ring {
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--primary) 26%, transparent),
-    0 2px 12px -6px color-mix(in srgb, var(--primary) 22%, transparent);
+    0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent),
+    4px 4px 0 0 var(--sh);
 }
 
 /* latar titik samar (pengganti grid tegas) */
 .bg-grid {
-  background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--grid-line) 1.2px, transparent 1.2px);
   background-size: 28px 28px;
 }
 
@@ -719,25 +666,21 @@ select option {
   color: transparent;
 }
 
-/* blob ambience */
+/* blob ambience — bentuk datar (tanpa blur = hemat GPU) */
 .bg-blob {
   position: absolute;
-  border-radius: 9999px;
-  filter: blur(72px);
   pointer-events: none;
   will-change: transform;
 }
 
-/* badge glass status */
+/* badge status */
 .badge-glass {
-  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-bold;
   background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  -webkit-backdrop-filter: blur(var(--blur-sm));
-  backdrop-filter: blur(var(--blur-sm));
+  border: 2px solid var(--glass-ter-border);
 }
 
-/* chip glass kecil */
+/* chip kecil */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -745,19 +688,17 @@ select option {
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   background: var(--glass-ter-bg);
-  border: 1px solid var(--glass-ter-border);
-  -webkit-backdrop-filter: blur(var(--blur-sm));
-  backdrop-filter: blur(var(--blur-sm));
-  color: var(--slate-400);
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  border: 2px solid var(--glass-ter-border);
+  color: var(--slate-500);
+  transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
 }
 .chip:hover { border-color: var(--glass-pri-border); color: var(--white); }
 
 /* skeleton loading */
 .skeleton {
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(90deg, var(--glass-ter-bg) 25%, var(--glass-sec-bg) 50%, var(--glass-ter-bg) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s linear infinite;
@@ -774,9 +715,9 @@ select option {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* scrollbar */
-::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--scroll-track); }
-::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 8px; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border: 2px solid var(--bd); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
 
 /* =====================================================================
@@ -807,53 +748,49 @@ select option {
 }
 .md-body h2::before {
   content: "";
-  @apply w-1.5 h-6 rounded-full bg-gradient-to-b from-primary to-accent shrink-0;
+  @apply w-2 h-6 bg-primary shrink-0 border-2 border-[var(--bd)];
 }
 .md-body h3 {
   @apply text-lg font-semibold text-white mt-7 mb-3 scroll-mt-28;
 }
 .md-body p { @apply mb-4; }
 .md-body a {
-  @apply text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent transition;
+  @apply text-accent font-semibold underline decoration-accent underline-offset-2 hover:decoration-accent transition;
 }
 .md-body ul { @apply mb-4 pl-5 space-y-1.5 list-none; }
 .md-body ul li { @apply relative; }
 .md-body ul li::before {
   content: "";
-  @apply absolute -left-4.5 top-2.5 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent;
+  @apply absolute left-0 top-2 h-2 w-2 bg-primary border-2 border-[var(--bd)];
 }
 .md-body ol { @apply mb-4 pl-5 space-y-1.5 list-decimal marker:text-accent; }
 .md-body strong { @apply text-white font-semibold; }
 .md-body code:not(pre code) {
-  @apply font-mono text-[13px] px-1.5 py-0.5 rounded-md bg-indigo-500/15 text-indigo-200 border border-indigo-400/20;
+  @apply font-mono text-[13px] px-1.5 py-0.5 rounded-md bg-indigo-500/15 text-indigo-200 border-2 border-indigo-400/30;
 }
 .md-body pre {
-  @apply mb-5 overflow-x-auto rounded-xl border border-white/10 bg-ink-900/90 p-4 text-[13px] shadow-sm backdrop-blur-md;
+  @apply mb-5 overflow-x-auto rounded-xl border-2 border-[var(--bd)] bg-ink-900 shadow-[3px_3px_0_0_var(--sh)];
 }
-.md-body pre code { @apply font-mono text-slate-200 leading-relaxed; }
-
-/* tabel — kontainer glass, scroll horizontal di layar kecil */
-.md-body table {
-  @apply w-full mb-6 text-sm;
-  display: block;
-  overflow-x: auto;
-  border-radius: 14px;
-  border: 1px solid var(--glass-sec-border);
-  background: var(--glass-ter-bg);
-  -webkit-backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
-  backdrop-filter: blur(var(--blur-sm)) saturate(1.3);
+.md-body pre code {
+  @apply block p-4 text-[13px] leading-relaxed font-mono text-slate-300;
 }
-.md-body thead { display: table-header-group; }
-.md-body thead th {
-  @apply text-left bg-white/[0.06] text-white font-semibold px-4 py-2.5 border-b border-white/10 whitespace-nowrap;
-}
-.md-body tbody td {
-  @apply px-4 py-2.5 border-b border-white/5 align-top;
-}
-.md-body tbody tr { @apply transition-colors hover:bg-white/[0.03]; }
-.md-body tbody tr:last-child td { border-bottom: none; }
 .md-body blockquote {
-  @apply border-l-2 border-accent/60 bg-accent/5 rounded-r-lg px-4 py-3 mb-4 text-slate-300;
+  @apply mb-4 border-l-4 border-primary px-4 py-3 text-slate-400 italic rounded-r-xl;
+  background: var(--glass-ter-bg);
+  border-top: 2px solid var(--bd);
+  border-right: 2px solid var(--bd);
+  border-bottom: 2px solid var(--bd);
 }
-.md-body hr { @apply border-white/10 my-8; }
-.md-body img { @apply rounded-xl my-4; }
+.md-body table {
+  @apply mb-5 w-full border-collapse text-sm;
+}
+.md-body th {
+  @apply border-2 border-[var(--bd)] px-3 py-2 text-left font-bold text-white;
+  background: var(--glass-ter-bg);
+}
+.md-body td {
+  @apply border-2 border-[var(--bd)] px-3 py-2 text-slate-400;
+}
+.md-body hr {
+  @apply my-8 border-t-2 border-[var(--bd)];
+}

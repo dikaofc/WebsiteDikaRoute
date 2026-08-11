@@ -24,7 +24,8 @@ loadEnv();
 //  - Vercel (bundle CJS / native ESM): cwd = root fungsi (/var/task)
 //  - Lokal (npm start / tsx dari root): cwd = folder proyek
 const root = process.cwd();
-const DATA_DIR = (() => {
+// DATA_DIR bisa dioverride (dipakai test E2E agar tidak mencemari data asli).
+const DATA_DIR = process.env.DATA_DIR || (() => {
   const candidates = [
     path.join(root, "server", "data"), // lokal & Vercel (data ikut includeFiles)
     path.join(root, "data"),
@@ -885,14 +886,15 @@ app.get("/api/donation/stream/:transactionId", (req, res) => {
 /* ------------------------------------------------------------------ */
 
 /**
- * Status playground. Default TIDAK tersedia (backend gateway belum
- * terhubung). Set PLAYGROUND_ENABLED=1 di .env untuk mengaktifkannya.
+ * Status playground. Aktif secara default (SSE pipeline NYATA — streaming
+ * token, pipeline steps, usage & cost). Set PLAYGROUND_ENABLED=0 untuk
+ * menonaktifkan.
  */
 app.get("/api/playground/status", (_req, res) => {
-  const available = process.env.PLAYGROUND_ENABLED === "1";
+  const available = process.env.PLAYGROUND_ENABLED !== "0";
   res.json({
     available,
-    reason: available ? undefined : "Playground sedang kosong — gateway AI belum terhubung.",
+    reason: available ? undefined : "Playground dinonaktifkan oleh admin.",
   });
 });
 

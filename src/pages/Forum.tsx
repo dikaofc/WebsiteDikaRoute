@@ -16,6 +16,7 @@ import {
   Github,
   Inbox,
   Flame,
+  RotateCcw,
 } from "lucide-react";
 import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, GlassTabs, GlassSelect, GlassSkeleton, btnClass } from "../lib/ui";
@@ -83,10 +84,18 @@ export default function Forum() {
   const [voted, setVoted] = useState<Set<string>>(new Set());
 
   const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
       const res = await api.issues();
-      setIssues(res.issues);
-      setStats({ total: res.total, open: res.open, inProgress: res.inProgress, resolved: res.resolved });
+      // Defensif: jangan pernah biarkan data malformed menggagalkan render.
+      setIssues(Array.isArray(res.issues) ? res.issues : []);
+      setStats({
+        total: res.total ?? 0,
+        open: res.open ?? 0,
+        inProgress: res.inProgress ?? 0,
+        resolved: res.resolved ?? 0,
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Gagal memuat forum");
     } finally {
@@ -371,8 +380,13 @@ export default function Forum() {
               </div>
             )}
             {error && !loading && (
-              <div className="glass flex items-center gap-3 rounded-2xl border-rose-400/30 px-5 py-4 text-sm text-rose-300">
-                <AlertCircle size={16} /> {error}
+              <div className="glass flex flex-col items-center gap-4 rounded-2xl border-rose-400/30 px-5 py-6 text-sm text-rose-300">
+                <div className="flex items-center gap-3">
+                  <AlertCircle size={16} /> {error}
+                </div>
+                <button onClick={load} className="btn btn-secondary btn-sm">
+                  <RotateCcw size={13} /> {p.retry}
+                </button>
               </div>
             )}
             {!loading && !error && filtered.length === 0 && (

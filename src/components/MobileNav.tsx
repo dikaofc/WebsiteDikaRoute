@@ -55,7 +55,7 @@ export default function MobileNav() {
         aria-label={dict.nav.label}
         className="fixed inset-x-0 bottom-0 z-[var(--z-nav)] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
       >
-        <div className="glass mx-auto flex max-w-md items-stretch justify-between rounded-[1.25rem] px-1.5 py-1.5 shadow-lift">
+        <div className="glass mx-auto flex max-w-md items-stretch justify-between rounded-2xl px-1.5 py-1.5">
           {items.map((item) => {
             const Icon = item.icon;
             return (

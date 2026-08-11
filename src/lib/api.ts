@@ -63,25 +63,33 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     ...init,
   });
 
-  // Cegah pesan mentah "JSON.parse: unexpected character…" saat respons bukan
-  // JSON (mis. index.html SPA fallback atau halaman error serverless yang
-  // dikirim dengan status 2xx). Semua body dibaca sebagai teks lalu di-parse
-  // aman — kegagalan parse diperlakukan sebagai body kosong.
-  const parseJson = async (): Promise<unknown> => {
-    const text = await res.text();
-    if (!text.trim()) return {};
+  const text = await res.text();
+  const parseJson = (): { ok: true; data: unknown } | { ok: false } => {
+    if (!text.trim()) return { ok: false };
     try {
-      return JSON.parse(text);
+      return { ok: true, data: JSON.parse(text) };
     } catch {
-      return {};
+      return { ok: false };
     }
   };
 
   if (!res.ok) {
-    const body = (await parseJson()) as { error?: string };
-    throw new Error(body?.error || `Request gagal (${res.status})`);
+    const body = parseJson();
+    const err = body.ok ? (body.data as { error?: string } | null)?.error : undefined;
+    throw new Error(err || `Request gagal (${res.status})`);
   }
-  return (await parseJson()) as T;
+
+  // PENTING (akar masalah halaman blank): bila server membalas 2xx tapi body
+  // BUKAN JSON — mis. index.html SPA fallback yang keliru disajikan untuk
+  // /api/* oleh platform hosting — kita LEMPAR error tegas, bukan diam-diam
+  // mengembalikan objek kosong. Objek kosong membuat pemanggil membaca
+  // properti undefined (mis. res.issues) → crash render → seluruh halaman
+  // jadi putih/blank.
+  const body = parseJson();
+  if (!body.ok) {
+    throw new Error("Respons server tidak valid — muat ulang halaman.");
+  }
+  return body.data as T;
 }
 
 export const api = {

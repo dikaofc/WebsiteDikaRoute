@@ -249,6 +249,7 @@ export const en = {
     eyebrow: "Interactive Demo",
     title: ["Try ", "DikaRoute", " right now"],
     desc: "A realistic request simulated and streamed from the Express backend over SSE — watch routing, compression, and guards work step by step.",
+    demoNote: "Demo mode: the AI gateway backend isn't connected yet, so replies are simulated to showcase DikaRoute's routing pipeline over real SSE streaming.",
     unavailable: {
       badge: "Under development",
       title1: "PLAYGROUND IS NOT",
@@ -403,6 +404,7 @@ export const en = {
     empty1: "No matching reports yet.",
     empty2: "Be the first to report!",
     loading: "Loading forum…",
+    retry: "Try again",
     note: "Issues with the most votes get prioritized by maintainers. Please search before reporting to avoid duplicates.",
     justNow: "just now",
     hoursAgo: "h ago",

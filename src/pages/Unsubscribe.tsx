@@ -30,7 +30,7 @@ export default function Unsubscribe() {
   return (
     <div className="relative mx-auto max-w-lg px-4 pt-36 pb-24 sm:px-6">
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" />
-      <div className="pointer-events-none absolute left-1/2 top-40 h-56 w-56 -translate-x-1/2 rounded-full bg-indigo-600/[0.07] blur-[90px]" />
+      <div className="pointer-events-none absolute left-1/2 top-40 h-32 w-32 -translate-x-1/2 rotate-12 bg-indigo-500/10" />
 
       <Reveal>
         <div className="glass-strong relative rounded-3xl p-8 sm:p-10">
