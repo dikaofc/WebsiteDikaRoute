@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   Rocket,
@@ -12,6 +12,9 @@ import {
   ArrowLeft,
   BadgeCheck,
   PartyPopper,
+  ZoomIn,
+  Download,
+  X,
 } from "lucide-react";
 import clsx from "clsx";
 import { Reveal, PageHero, GradientTitle, btnClass } from "../lib/ui";
@@ -37,8 +40,27 @@ function StaticQrPanel({
     paidBtn: string;
     paidDesc: string;
     editBtn: string;
+    zoomHint: string;
+    download: string;
+    close: string;
   };
 }) {
+  // Lightbox: klik gambar QRIS → tampil besar + bisa diunduh.
+  const [zoom, setZoom] = useState(false);
+
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setZoom(false);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [zoom]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -55,8 +77,14 @@ function StaticQrPanel({
         <h3 className="mt-5 font-display text-xl font-bold text-white">{d.qrTitle}</h3>
         <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-slate-400">{d.qrDesc}</p>
 
-        {/* QRIS statis — foto kartu QRIS resmi */}
-        <div className="mx-auto mt-6 w-fit rounded-2xl p-3 shadow-[0_10px_30px_-14px_rgba(15,23,42,0.35)]" style={{ background: "#fff" }}>
+        {/* QRIS statis — foto kartu QRIS resmi (klik untuk perbesar/unduh) */}
+        <button
+          type="button"
+          onClick={() => setZoom(true)}
+          aria-label={d.zoomHint}
+          className="group mx-auto mt-6 w-fit cursor-zoom-in rounded-2xl p-3 shadow-[0_10px_30px_-14px_rgba(15,23,42,0.35)] transition-transform duration-200 hover:scale-[1.03] active:scale-[0.99]"
+          style={{ background: "#fff" }}
+        >
           <img
             src="/qris-static.jpg"
             alt="QRIS Dika Code"
@@ -64,9 +92,13 @@ function StaticQrPanel({
             height={395}
             className="h-auto w-[230px] rounded-xl sm:w-[280px]"
           />
-        </div>
+        </button>
         <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
           <BadgeCheck size={12} className="text-pink-400" /> {d.owner}
+          <span className="mx-1 text-slate-700">·</span>
+          <span className="inline-flex items-center gap-1 text-slate-400">
+            <ZoomIn size={11} /> {d.zoomHint}
+          </span>
         </p>
 
         <div className="mx-auto mt-5 max-w-sm space-y-2 text-left">
@@ -91,6 +123,53 @@ function StaticQrPanel({
           </button>
         </div>
       </div>
+
+      {/* Lightbox — perbesar & unduh QRIS */}
+      <AnimatePresence>
+        {zoom && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setZoom(false)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label={d.zoomHint}
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-h-full"
+            >
+              <img
+                src="/qris-static.jpg"
+                alt="QRIS Dika Code"
+                className="max-h-[76vh] w-auto rounded-2xl shadow-2xl ring-1 ring-white/15"
+              />
+              <div className="mt-5 flex items-center justify-center gap-3">
+                <a
+                  href="/qris-static.jpg"
+                  download="qris-dikacode.jpg"
+                  className={btnClass("primary", undefined, "text-sm text-white")}
+                >
+                  <Download size={15} /> {d.download}
+                </a>
+                <button
+                  onClick={() => setZoom(false)}
+                  className={btnClass("glass", undefined, "text-sm text-slate-200 hover:text-white")}
+                >
+                  <X size={15} /> {d.close}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
